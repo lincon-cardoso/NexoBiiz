@@ -12,8 +12,8 @@ function Navbar() {
         <span>NexoBiiz</span>
       </div>
       <ul className="navbar__menu">
-        <li>Produtossdafaafwew</li>
-        <li>Planos</li>
+        <li>Produtos</li>
+        <li>Planoss</li>
         <li>Suporte</li>
       </ul>
       <div className="navbar__actions">
