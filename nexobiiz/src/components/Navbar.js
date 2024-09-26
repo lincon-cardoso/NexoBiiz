@@ -12,7 +12,7 @@ function Navbar() {
         <span>NexoBiiz</span>
       </div>
       <ul className="navbar__menu">
-        <li>Produtos</li>
+        <li>Produto</li>
         <li>Planos</li>
         <li>Suporte</li>
       </ul>
