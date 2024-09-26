@@ -13,7 +13,7 @@ function Navbar() {
       </div>
       <ul className="navbar__menu">
         <li>Produtos</li>
-        <li>Planoss</li>
+        <li>Planos</li>
         <li>Suporte</li>
       </ul>
       <div className="navbar__actions">
