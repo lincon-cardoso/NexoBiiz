@@ -1,7 +1,7 @@
 import React from "react";
-import logo from "../assets/img/logo.png";
+import logo from "../../assets/img/logo.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import "../styles/components/Navbar.scss";
+import "../Navbar/Navbar.scss";
 // import "./Navbar.scss"; // Importar o arquivo de estilos
 
 function Navbar() {
@@ -20,8 +20,6 @@ function Navbar() {
         <i className="fa fa-search"></i>
         <i className="fa fa-user"></i>
       </div>
-      <div className="navbar__logo">NexoBiiz</div>
-      <img src="/assets/img/logo.png" alt="logo" />
     </nav>
   );
 }

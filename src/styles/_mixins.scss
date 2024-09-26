@@ -1,0 +1,11 @@
+@mixin center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin respond($breakpoint) {
+  @if $breakpoint == small {
+    @media (max-width: 600px) { @content; }
+  }
+}
