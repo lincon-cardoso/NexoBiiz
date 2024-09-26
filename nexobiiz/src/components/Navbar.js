@@ -1,12 +1,17 @@
 import React from "react";
+<<<<<<< HEAD
 import logo from "../assets/img/logo.png";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "../styles/components/Navbar.scss";
 
+=======
+// import "./Navbar.scss"; // Importar o arquivo de estilos
+>>>>>>> e7dc3af367dfd135c019b9beb3024b67919bad68
 
 function Navbar() {
   return (
     <nav className="navbar">
+<<<<<<< HEAD
       <div className="navbar__logo">
         <img src={logo} alt="logo" />
         <span>NexoBiiz</span>
@@ -20,6 +25,10 @@ function Navbar() {
         <i className="fa fa-search"></i> 
         <i className="fa fa-user"></i> 
       </div>
+=======
+      <div className="navbar__logo">NexoBiiz</div>
+      <img src="/assets/img/logo.png" alt="logo" />
+>>>>>>> e7dc3af367dfd135c019b9beb3024b67919bad68
     </nav>
   );
 }
