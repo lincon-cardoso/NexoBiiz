@@ -1,0 +1,41 @@
+// src/styles/_variables.scss
+$primary-color: #4CAF50;
+$secondary-color: #FF9800;
+$background-color: #f5f5f5;
+$text-color: #333;
+
+// src/styles/_mixins.scss
+@mixin center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// src/styles/index.scss
+@import 'variables';
+@import 'mixins';
+
+/* Reset CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Arial', sans-serif;
+  background-color: $background-color;
+}
+
+h1, h2, h3 {
+  color: $primary-color;
+}
+
+a {
+  text-decoration: none;
+  color: $secondary-color;
+  &:hover {
+    color: darken($secondary-color, 10%);
+  }
+}
