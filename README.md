@@ -1,2 +1,2 @@
 # NexoBiiz
- Sistema de gerenciamento de pequenas empresas
+ Sistema de gerenciamento de pequenas e medias empresas.
