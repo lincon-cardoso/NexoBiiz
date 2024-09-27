@@ -3,3 +3,7 @@
 @import 'fonts';
 @import 'reset';
 @import 'config';
+@import 'importFrameworks';
+
+// variaveis de components
+@import '../components/Navbar/Navbar';
