@@ -1,0 +1,11 @@
+body {
+  background-color: $background-light;
+  color: $text-dark;
+  font-family: $font-primary;
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  color: $primary-color;
+  font-weight: 700;
+}

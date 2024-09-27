@@ -15,6 +15,7 @@ function Navbar() {
         <li>Suporte</li>
       </ul>
       <div className="navbar__actions">
+        <span>Conheca o NexoBiiz</span>
         <i className="fa fa-search"></i>
         <i className="fa fa-user"></i>
       </div>
