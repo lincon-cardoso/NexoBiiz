@@ -1,6 +1,8 @@
 import React from "react";
 import logo from "../../assets/img/logo.png";
-import "../../styles/index.scss";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "../Navbar/Navbar.scss";
+// import "./Navbar.scss"; // Importar o arquivo de estilos
 
 function Navbar() {
   return (
