@@ -6,6 +6,7 @@
   color: $text-color;
   height: 90px;
   padding: 10px 200px;
+  border: 1px solid wheat;
 
   .navbar__logo {
     display: flex;
@@ -36,6 +37,8 @@
     border: 2px solid $text-color;
     height: 100%;
     font-size: 20px;
+    white-space: nowrap; // Impede que o texto quebre em várias linhas
+
     li {
       margin: 0 30px;
     }
@@ -44,25 +47,22 @@
   .navbar__actions {
     display: flex;
     align-items: center;
-    justify-content: space-between;    
-    border: 2px solid $text-color;    
-    height: 100%;
-    width: 250px;
-    
+    flex-direction: row;
+    justify-content: space-between;
+    // border: 2px solid $text-color;    
+    width: 300px;
+    padding: 20px;
 
-    span {      
+    span {
       font-family: $font-primary;
-      font-size: 20px; 
+      font-size: 24;
       border: 2px solid $text-color;
-      margin: 0 5px 0 10px;
+      white-space: nowrap;
     }
 
-    i {      
-      margin: 0 5px 0 10px;
-      border: 2px solid $text-color;
-      font-size: 24px; 
-      
+    i {
+      font-size: 24px;      
+      // border: 1px solid red;
     }
-
   }
 }

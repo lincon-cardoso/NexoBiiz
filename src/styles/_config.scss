@@ -1,11 +1,44 @@
-body {
-  background-color: $background-light;
-  color: $text-dark;
-  font-family: $font-primary;
-  line-height: 1.6;
-}
+// _config.scss
 
-h1, h2, h3 {
-  color: $primary-color;
-  font-weight: 700;
-}
+// Cores Primárias
+$primary-color: #3498db; // Azul
+$secondary-color: #2ecc71; // Verde
+$error-color: #e74c3c; // Vermelho
+$background-color: #f5f5f5; // Fundo claro
+$text-color: #333; // Cor de texto principal
+$light-text-color: #fff; // Texto claro
+$border-color: #e0e0e0; // Cor de borda
+
+// Tipografia
+$font-family-base: 'Roboto', sans-serif;
+$font-size-base: 16px;
+$font-size-sm: 14px;
+$font-size-lg: 18px;
+$line-height-base: 1.5;
+
+// Espaçamento
+$spacer: 1rem;
+$spacer-sm: 0.5rem;
+$spacer-lg: 2rem;
+
+// Bordas
+$border-radius: 4px;
+$border-width: 1px;
+
+// Transições
+$transition-speed: 0.3s;
+$transition-ease: ease-in-out;
+
+// Sombras
+$box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+// Z-Index
+$z-index-header: 1000;
+$z-index-modal: 1050;
+$z-index-tooltip: 1100;
+
+// Breakpoints (Responsivo)
+$breakpoint-xs: 480px;
+$breakpoint-sm: 768px;
+$breakpoint-md: 992px;
+$breakpoint-lg: 1200px;
