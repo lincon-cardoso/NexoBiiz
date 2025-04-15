@@ -1,0 +1,104 @@
+.cabecalho {
+  background-color: #000000; /* Fundo preto */
+  color: #fff; /* Letras brancas */
+  padding: 10px 200px;
+  border-bottom: 1px solid #0080ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Arial", sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+    text-decoration: none;
+  
+
+  .cabecalho__logo-titulo {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    gap: 20px;
+    color: #fff; /* Letras brancas */
+    text-decoration: none;
+
+    img {
+      width: 100%;
+      height: 50px;
+      border-radius: 50%;
+    }
+  }
+
+  .cabecalho__menu {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff; /* Letras brancas */
+    text-decoration: none;
+
+    li {
+      display: inline-block;
+      margin-right: 20px;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .cabecalho__acoes {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff; /* Texto branco */
+    text-decoration: none;
+    .cabecalho__pesquisa {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      .cabecalho__pesquisa-input {
+        padding: 5px;
+        font-size: 16px;
+        color: #000; /* Texto preto no input */
+        background-color: #fff; /* Fundo branco */
+        border: 1px solid #ccc;
+        border-radius: 15px;
+      }
+
+      .cabecalho__pesquisa-btn {
+        background-color: #0080ff; /* Fundo azul */
+        color: #fff; /* Ícone branco */
+        border: none;
+        border-radius: 15px;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+    }
+
+    .cabecalho__btn-login,
+    .cabecalho__btn-cadastro {
+      background-color: transparent; /* Fundo transparente */
+      color: #fff; /* Texto branco */
+      border: 1px solid #fff; /* Borda branca */
+      padding: 5px 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .cabecalho__btn-login:hover,
+    .cabecalho__btn-cadastro:hover {
+      background-color: #fff; /* Fundo branco no hover */
+      color: #000; /* Texto preto no hover */
+    }
+  }
+}

@@ -1,0 +1,79 @@
+// Variáveis de estilo
+$cor-fundo: #f8f9fa;
+$cor-texto: #343a40;
+$cor-hover: #007bff;
+$fonte-padrao: "Arial", sans-serif;
+$tamanho-fonte: 19px;
+$peso-fonte: 400;
+
+.rodape {
+  background-color: $cor-fundo;
+  text-align: center;
+  font-size: $tamanho-fonte;
+  color: $cor-texto;
+  font-family: $fonte-padrao;
+  font-weight: $peso-fonte;
+  display: flex;
+  justify-content: center;
+
+  .rodape__conteudo {
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 40px;
+    width: 100%;
+
+    .rodape__navegacao {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      ul {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 30px;
+      }
+
+      li {
+        a {
+          text-decoration: none;
+          color: $cor-texto;
+          font-size: $tamanho-fonte;
+          font-weight: $peso-fonte;
+
+          &:hover {
+            color: $cor-hover;
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+
+    .rodape__redes-sociais {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+
+      a {
+        text-decoration: none;
+        color: $cor-texto;
+        font-size: $tamanho-fonte;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+          color: $cor-hover;
+        }
+
+        svg {
+          margin-right: 8px; /* Espaço entre o ícone e o texto, se necessário */
+        }
+      }
+    }
+  }
+}
