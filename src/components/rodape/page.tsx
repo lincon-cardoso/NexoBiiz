@@ -5,7 +5,7 @@ export const Rodape: React.FC = () => {
     return (
         <footer className="rodape">
             <div className="rodape__conteudo">
-                <p>© 2025 Nexobiiz. Todos os direitos reservados.</p>
+                <p>© 2025 Nexobii. Todos os direitos reservados.</p>
                 <nav className="rodape__navegacao">
                     <ul>
                         <li><a href="/sobre">Sobre Nós</a></li>
