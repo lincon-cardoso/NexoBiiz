@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export const Cabecalho: React.FC = () => {
     // Variáveis para textos e classes
@@ -8,14 +9,18 @@ export const Cabecalho: React.FC = () => {
     const logoClass = "logo";
     const titulo = "NexoBiiz";
 
-    const menuItems = ["Produto", "Planos", "Suporte"];
+    const menuItems = [
+        { label: "Tutorial", href: "/tutorial" },
+        { label: "Sobre o Projeto", href: "/sobre-o-projeto" }, // Ajustado para a rota correta
+        { label: "Suporte", href: "/suporte" },
+    ];
     const btnLoginText = "Login";
     const btnCadastroText = "Cadastro";
 
     return (
         <header className="cabecalho">
             {/* Bloco de logo e título */}
-            <div className="cabecalho__logo-titulo">
+            <Link href="/" className="cabecalho__logo-titulo">
                 <Image
                     src={logoSrc}
                     alt={logoAlt}
@@ -24,7 +29,7 @@ export const Cabecalho: React.FC = () => {
                     height={50}
                 />
                 <h1 className="cabecalho__titulo">{titulo}</h1>
-            </div>
+            </Link>
 
             {/* Menu de navegação */}
             <div className="cabecalho__menu">
@@ -32,7 +37,7 @@ export const Cabecalho: React.FC = () => {
                     <ul className="cabecalho__menu-lista">
                         {menuItems.map((item, index) => (
                             <li key={index} className="cabecalho__menu-item">
-                                {item}
+                                <Link href={item.href}>{item.label}</Link>
                             </li>
                         ))}
                     </ul>
@@ -41,15 +46,6 @@ export const Cabecalho: React.FC = () => {
 
             {/* Botões de ação */}
             <div className="cabecalho__acoes">
-                {/* Caixa de pesquisa */}
-                <div className="cabecalho__pesquisa">
-                    <input
-                        type="text"
-                        className="cabecalho__pesquisa-input"
-                        placeholder="Digite sua pergunta"
-                    />
-                    <button className="cabecalho__pesquisa-btn">🔍</button>
-                </div>
                 {/* Botões de login e cadastro */}
                 <button className="cabecalho__btn-login">{btnLoginText}</button>
                 <button className="cabecalho__btn-cadastro">{btnCadastroText}</button>

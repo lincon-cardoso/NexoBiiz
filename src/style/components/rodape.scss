@@ -25,33 +25,7 @@ $peso-fonte: 400;
     gap: 40px;
     width: 100%;
 
-    .rodape__navegacao {
-      display: flex;
-      justify-content: center;
-      align-items: center;
 
-      ul {
-        display: flex;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        gap: 30px;
-      }
-
-      li {
-        a {
-          text-decoration: none;
-          color: $cor-texto;
-          font-size: $tamanho-fonte;
-          font-weight: $peso-fonte;
-
-          &:hover {
-            color: $cor-hover;
-            text-decoration: underline;
-          }
-        }
-      }
-    }
 
     .rodape__redes-sociais {
       display: flex;
