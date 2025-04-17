@@ -1,4 +1,3 @@
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,7 +10,7 @@ export const Cabecalho: React.FC = () => {
 
     const menuItems = [
         { label: "Tutorial", href: "/tutorial" },
-        { label: "Sobre o Projeto", href: "/sobre-o-projeto" }, // Ajustado para a rota correta
+        { label: "Sobre o Projeto", href: "/sobre-o-projeto" }, 
         { label: "Suporte", href: "/suporte" },
     ];
     const btnLoginText = "Login";
@@ -46,9 +45,13 @@ export const Cabecalho: React.FC = () => {
 
             {/* Botões de ação */}
             <div className="cabecalho__acoes">
-                {/* Botões de login e cadastro */}
-                <button className="cabecalho__btn-login">{btnLoginText}</button>
-                <button className="cabecalho__btn-cadastro">{btnCadastroText}</button>
+                {/* Botões de login e cadastro com rotas */}
+                <Link href="/login" passHref>
+                    <button className="cabecalho__btn-login">{btnLoginText}</button>
+                </Link>
+                <Link href="/cadastro" passHref>
+                    <button className="cabecalho__btn-cadastro">{btnCadastroText}</button>
+                </Link>
             </div>
         </header>
     );

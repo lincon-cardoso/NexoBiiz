@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa'; // Importação dos ícones
 
 export const Rodape: React.FC = () => {
