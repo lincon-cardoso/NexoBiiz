@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
     optimizeCss: true, // Ativa otimização de CSS
   },
 
-  output: 'export', // Adiciona configuração de exportação estática
 
   async headers() {
     return [
