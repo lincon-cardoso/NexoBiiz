@@ -34,14 +34,22 @@ export default function DashboardPage() {
         if (cadastros.length > 0) {
             setUsuario(cadastros[0]); // Assume que o primeiro cadastro é o usuário atual
         }
+
+        // Carrega as transações do localStorage ao montar o componente
+        const transacoesSalvas = JSON.parse(localStorage.getItem("transacoes") || "[]");
+        setTransacoes(transacoesSalvas);
     }, []);
 
     function handleAdicionar(transacao: Transacao) {
-        setTransacoes((prev) => [...prev, transacao]);
+        const novasTransacoes = [...transacoes, transacao];
+        setTransacoes(novasTransacoes);
+
+        // Salva as transações no localStorage
+        localStorage.setItem("transacoes", JSON.stringify(novasTransacoes));
     }
 
     function handleLogout() {
-        router.push("/"); // Redireciona para a página inicial
+        router.push("/login"); // Redireciona para a página inicial
     }
 
     return (
@@ -56,8 +64,6 @@ export default function DashboardPage() {
                     <p><strong>CNPJ:</strong> {usuario.cnpj}</p>
                 </div>
             )}
-
-
 
             <nav className="menu">
                 <button onClick={() => setActiveSection("custos")}>Custos</button>
