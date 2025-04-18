@@ -42,8 +42,11 @@
     }
 }
 
-.login-button {
 
+
+.login-button {
+    display: block; // Garante que o botão ocupe toda a largura disponível
+    width: 100%; // Faz com que o botão tenha o mesmo tamanho
     padding: 0.75rem;
     font-size: 1rem;
     font-weight: bold;
@@ -53,7 +56,7 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
-    margin-bottom: 1rem;
+    margin-bottom: 1rem;  
     margin-top: 1rem;
 
     &:hover {

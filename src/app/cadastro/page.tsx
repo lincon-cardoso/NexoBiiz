@@ -1,12 +1,28 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function CadastroPage() {
+    const router = useRouter();
+    const [isMounted, setIsMounted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true); // Garante que o componente foi montado no cliente
+    }, []);
+
+    const handleLogout = () => {
+        router.push('/'); // Redireciona para o início da página
+    };
+
     const [formData, setFormData] = useState({
         nome: '',
         email: '',
         senha: '',
+        nomeEmpresa: '',
+        cnpj: '',
+        telefone: '',
     });
 
     const [mensagem, setMensagem] = useState('');
@@ -16,29 +32,85 @@ export default function CadastroPage() {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const validateEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const validateSenha = (senha: string) => {
+        return senha.length >= 6; // Senha deve ter pelo menos 6 caracteres
+    };
+
+    const validateCNPJ = (cnpj: string) => {
+        const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
+        return cnpjRegex.test(cnpj);
+    };
+
+    const validateTelefone = (telefone: string) => {
+        const telefoneRegex = /^\(\d{2}\)\s\d{4,5}-\d{4}$/;
+        return telefoneRegex.test(telefone);
+    };
+
+    const validateNome = (nome: string) => {
+        return nome.trim().length > 0; // Nome não pode ser vazio
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        setIsLoading(true); // Ativa o estado de carregamento
+
+        if (!validateNome(formData.nome)) {
+            setMensagem('Nome inválido.');
+            setIsLoading(false);
+            return;
+        }
+
+        if (!validateEmail(formData.email)) {
+            setMensagem('Email inválido.');
+            setIsLoading(false);
+            return;
+        }
+
+        if (!validateSenha(formData.senha)) {
+            setMensagem('Senha deve ter pelo menos 6 caracteres.');
+            setIsLoading(false);
+            return;
+        }
+
+        if (!validateCNPJ(formData.cnpj)) {
+            setMensagem('CNPJ inválido. Use o formato XX.XXX.XXX/XXXX-XX.');
+            setIsLoading(false);
+            return;
+        }
+
+        if (!validateTelefone(formData.telefone)) {
+            setMensagem('Telefone inválido. Use o formato (XX) XXXXX-XXXX.');
+            setIsLoading(false);
+            return;
+        }
 
         try {
-            const response = await fetch('/api/cadastro', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
+            // Recupera os dados existentes no localStorage
+            const existingData = JSON.parse(localStorage.getItem('cadastros') || '[]');
 
-            if (response.ok) {
-                setMensagem('Cadastro realizado com sucesso!');
-                setFormData({ nome: '', email: '', senha: '' });
-            } else {
-                const errorData = await response.json();
-                setMensagem(`Erro: ${errorData.message || 'Não foi possível realizar o cadastro.'}`);
-            }
+            // Adiciona o novo cadastro à lista
+            const updatedData = [...existingData, formData];
+
+            // Salva os dados atualizados no localStorage
+            localStorage.setItem('cadastros', JSON.stringify(updatedData));
+
+            setMensagem('Cadastro realizado com sucesso!');
+            setFormData({ nome: '', email: '', senha: '', nomeEmpresa: '', cnpj: '', telefone: '' });
         } catch {
-            setMensagem('Erro ao conectar com o servidor.');
+            setMensagem('Erro ao salvar os dados. Tente novamente mais tarde.');
+        } finally {
+            setIsLoading(false); // Desativa o estado de carregamento
         }
     };
+
+    if (!isMounted) {
+        return null; // Evita renderização no servidor
+    }
 
     return (
         <div className="cadastro-container">
@@ -80,11 +152,60 @@ export default function CadastroPage() {
                         className="form-input"
                     />
                 </div>
-                <button type="submit" className="submit-button">
-                    Cadastrar
-                </button>
+                <div className="form-group">
+                    <label htmlFor="nomeEmpresa" className="form-label">Nome da Empresa:</label>
+                    <input
+                        type="text"
+                        id="nomeEmpresa"
+                        name="nomeEmpresa"
+                        value={formData.nomeEmpresa}
+                        onChange={handleChange}
+                        required
+                        className="form-input"
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="cnpj" className="form-label">CNPJ:</label>
+                    <input
+                        type="text"
+                        id="cnpj"
+                        name="cnpj"
+                        value={formData.cnpj}
+                        onChange={handleChange}
+                        required
+                        className="form-input"
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="telefone" className="form-label">Telefone:</label>
+                    <input
+                        type="text"
+                        id="telefone"
+                        name="telefone"
+                        value={formData.telefone}
+                        onChange={handleChange}
+                        required
+                        className="form-input"
+                    />
+                </div>
+                <div className="button-group">
+                    <button
+                        type="submit"
+                        className="submit-button"
+                        disabled={isLoading} // Desativa o botão enquanto carrega
+                    >
+                        {isLoading ? 'Cadastrando...' : 'Cadastrar'}
+                    </button>
+                    <button type="button" className="login-button" onClick={handleLogout}>
+                        Sair
+                    </button>
+                </div>
             </form>
-            {mensagem && <p className="mensagem">{mensagem}</p>}
+            {mensagem && (
+                <p className="mensagem" aria-live="polite">
+                    {mensagem}
+                </p>
+            )}
         </div>
     );
 }
