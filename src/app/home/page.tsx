@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Home: React.FC = () => {
+const Home: React.FC = () => {
     return (
         <div className="home">
             {/* Título e Subtítulo */}
@@ -96,3 +96,5 @@ export const Home: React.FC = () => {
         </div>
     );
 };
+
+export default Home;
