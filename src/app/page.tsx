@@ -1,13 +1,10 @@
-import { Cabecalho } from '@/components/cabecalho/Cabecalho';
-import { Rodape } from '@/components/rodape/Rodape';
-import Home from '@/app/home/page';
+import {Header} from '@/components/Header/Header';
 
-export default function HomePageComponent() {
+export default function Home() {
   return (
-    <div >
-      <Cabecalho />
-      <Home />
-      <Rodape />
+    <div>
+      <Header />
+      
     </div>
   );
 }
