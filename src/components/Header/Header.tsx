@@ -7,7 +7,7 @@ export function Header() {
         <header className={styles.header} role="banner">
             <nav className={styles.headerNav} role="navigation" aria-label="Main Navigation">
                 <div className={styles.headerLogo}>
-                    <Link href="/" aria-label="Go to Home">
+                    <Link href="/" aria-label="Go to Home" className={styles.headerLogoLink}>
                         <Image
                             src="/img/logo.png"
                             alt="NexoBiiz Logo"
@@ -21,13 +21,13 @@ export function Header() {
                 </div>
                 <ul className={styles.headerNavLinks}>
                     <li className={styles.headerNavItem}>
-                        <Link href="/">Home</Link>
+                        <Link href="/">Tutorial</Link>
                     </li>
                     <li className={styles.headerNavItem}>
-                        <Link href="/about">About</Link>
+                        <Link href="/sobre-o-projeto">Sobre o Projeto</Link>
                     </li>
                     <li className={styles.headerNavItem}>
-                        <Link href="/contact">Contact</Link>
+                        <Link href="/supporte">Suporte</Link>
                     </li>
                 </ul>
                 <div className={styles.headerAuthButtons}>

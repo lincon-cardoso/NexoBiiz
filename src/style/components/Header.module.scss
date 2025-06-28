@@ -1,33 +1,88 @@
 .header {
+    background: linear-gradient(90deg, #6B21A8FF 0%, #312E81FF 100%);
+    border-radius: 0px 0px 0px 0px;
+    box-shadow: 0px 0px 1px #171a1f12, 0px 0px 2px #171a1f1F;
+    color: #FFFFFF;
+
     .headerNav {
         display: flex;
-        flex-direction: row;
         align-items: center;
-        justify-content: space-between;
-        width: 100wh;
-        height: 65px;
-        background: linear-gradient(90deg, #6B21A8FF 0%, #312E81FF 100%);
-        border-radius: 0px 0px 0px 0px;
-        box-shadow: 0px 0px 1px #171a1f12, 0px 0px 2px #171a1f1F;
-
+        justify-content: space-between;        
+        max-width: 1200px; // Define um tamanho máximo para a div
+        margin: 0 auto; // Centraliza horizontalmente
+        padding: 0.5rem 1rem; // Adiciona espaçamento nas laterais
+        color: #FFFFFF;
 
         .headerLogo {
+            display: flex;
+            flex-direction: row; // Define a direção horizontal para posicionar o texto ao lado direito da imagem
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
 
-            
+
+            .headerLogoImage {
+                width: 80px;
+                height: 50px;
+                margin: 0; // Remove margens desnecessárias
+                vertical-align: middle; // Garante alinhamento vertical
+            }
+
+            .headerLogoText {
+                display: inline-block;
+                vertical-align: middle; // Garante alinhamento vertical
+                font-size: 1.5rem;
+                line-height: normal; // Ajusta o espaçamento para alinhamento
+            }
+        }
+
+        .headerNavLinks {
             display: flex;
             align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-            margin-left: 10px;
-            border-radius: 50%;
-            background-color: #ffffff33;
-            box-shadow: 0px 0px 1px #171a1f12, 0px 0px 2px #171a1f1F;
+            gap: 2rem; 
+            font-size: 14px;
+            line-height: 20px;
+            font-weight: 600;
 
-            img {
-                width: 30px;
-                height: 30px;
-                border-radius: 50%;
+            a {
+                text-decoration: none;
+                color: #FFFFFF;
+                padding: 0.5rem 1rem;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.2);
+                }
+            }
+        }
+
+        .headerAuthButtons{            
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            
+            .headerLoginButton,
+            .headerRegisterButton {
+                padding: 0.5rem 1rem;                
+                border-radius: 15px;
+                font-size: 14px;
+                font-weight: 600;
+                color: #FFFFFF;
+                text-decoration: none;
+                transition: background-color 0.3s ease;
+
+                &.headerLoginButton {
+                    background-color: #4F46E5; // Indigo
+                }
+
+                &.headerRegisterButton {
+                    background-color: #6B21A8; 
+                }
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.2);
+                }
             }
         }
     }
