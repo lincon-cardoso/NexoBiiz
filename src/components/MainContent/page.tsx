@@ -13,9 +13,7 @@ export function MainContent() {
           </h1>
         </header>
         <p className={styles.description}>
-          <h1>
-            teste
-          </h1>
+         
           Um sistema gratuito feito para ajudar microempreendedores da
           comunidade a crescerem com tecnologia, simplificando a gestão diária.
         </p>
