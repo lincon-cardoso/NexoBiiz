@@ -1,0 +1,117 @@
+.tutorialPage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    .mainContent {
+        display: flex;
+        flex-direction: column;
+        align-items: center; // Centraliza os elementos horizontalmente
+        justify-content: center; // Centraliza os elementos verticalmente
+        min-width: 1200px; // Define a largura mínima para o conteúdo principal
+        padding: 20px; // Adiciona espaçamento interno
+        gap: 20px; // Reduz a distância entre os elementos
+
+        .introSection {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; // Centraliza os itens horizontalmente
+            height: 300px;
+            gap: 44px; // Define a distância entre o título e o texto
+
+            .title {
+                font-size: 32px;
+                line-height: 48px;
+                font-weight: 700;
+                color: rgba(85, 26, 139, 1);
+                font-family: Archivo;
+            }
+
+            .subtitle {
+                width: 685px;
+                font-size: 24px;
+                line-height: 36px;
+                font-weight: 400;
+                color: rgba(86, 93, 109, 1);
+                font-family: Inter;
+            }
+        }
+
+        .sectionsContainer {
+            display: flex;
+            gap: 30px;
+            padding: 25px;
+
+            .stepsSection,
+            .tipsSection {
+                flex: 1;
+            }
+
+            .stepsSection {
+                .step {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    width: 658px;
+                    height: 405px;
+
+                    .stepTitle {
+                        font-size: 45px;
+                        line-height: 48px;
+                        font-weight: 400;
+                        color: rgba(85, 26, 139, 1);
+                        font-family: Archivo;
+                        margin: 66px 0 65px; // Combina margin-top e margin-bottom
+                    }
+
+                    .stepsContainer {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 25px;
+
+                        .stepDescription {
+                            font-family: Inter;
+                            width: 492px;
+                            font-size: 20px;
+                            line-height: 22px;
+                            font-weight: 400;
+                            color: rgba(0, 123, 255, 1);
+
+                            .span {
+                                font-weight: 700;
+                                color: black;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .tipsSection {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 658px;
+                height: 405px;
+
+                .tipsTitle {
+                    font-size: 45px;
+                    line-height: 48px;
+                    font-weight: 400;
+                    color: rgba(85, 26, 139, 1);
+                    font-family: Archivo;
+                    margin: 66px 0 65px; // Combina margin-top e margin-bottom
+                }
+
+                .tipsDescription {
+                    font-family: Inter;
+                    width: 492px;
+                    font-size: 20px;
+                    line-height: 23px;
+                    font-weight: 400;
+                }
+            }
+        }
+    }
+}

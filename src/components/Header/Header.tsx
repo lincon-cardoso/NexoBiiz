@@ -21,13 +21,13 @@ export function Header() {
                 </div>
                 <ul className={styles.headerNavLinks}>
                     <li className={styles.headerNavItem}>
-                        <Link href="/">Tutorial</Link>
+                        <Link href="/tutorial">Tutorial</Link>
                     </li>
                     <li className={styles.headerNavItem}>
                         <Link href="/sobre-o-projeto">Sobre o Projeto</Link>
                     </li>
                     <li className={styles.headerNavItem}>
-                        <Link href="/supporte">Suporte</Link>
+                        <Link href="/suporte">Suporte</Link>
                     </li>
                 </ul>
                 <div className={styles.headerAuthButtons}>
