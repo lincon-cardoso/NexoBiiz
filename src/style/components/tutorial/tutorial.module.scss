@@ -6,23 +6,23 @@
     .mainContent {
         display: flex;
         flex-direction: column;
-        align-items: center; // Centraliza os elementos horizontalmente
-        justify-content: center; // Centraliza os elementos verticalmente
-        min-width: 1200px; // Define a largura mínima para o conteúdo principal
-        padding: 20px; // Adiciona espaçamento interno
-        gap: 20px; // Reduz a distância entre os elementos
+        align-items: center;
+        justify-content: center;
+        min-width: 1200px;
+        padding: 20px;
+        gap: 20px;
 
         .introSection {
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center; // Centraliza os itens horizontalmente
+            align-items: center;
             height: 300px;
-            gap: 44px; // Define a distância entre o título e o texto
+            gap: 44px;
 
             .title {
-                font-size: 32px;
+                font-size: 36px;
                 line-height: 48px;
                 font-weight: 700;
                 color: rgba(85, 26, 139, 1);
@@ -30,12 +30,12 @@
             }
 
             .subtitle {
-                width: 685px;
-                font-size: 24px;
-                line-height: 36px;
+                font-size: 28px;
+                line-height: 40px;
                 font-weight: 400;
                 color: rgba(86, 93, 109, 1);
                 font-family: Inter;
+                width: 685px;
             }
         }
 
@@ -58,12 +58,12 @@
                     height: 405px;
 
                     .stepTitle {
-                        font-size: 45px;
+                        font-size: 36px;
                         line-height: 48px;
                         font-weight: 400;
                         color: rgba(85, 26, 139, 1);
                         font-family: Archivo;
-                        margin: 66px 0 65px; // Combina margin-top e margin-bottom
+                        margin: 66px 0 65px;
                     }
 
                     .stepsContainer {
@@ -73,11 +73,11 @@
 
                         .stepDescription {
                             font-family: Inter;
-                            width: 492px;
                             font-size: 20px;
                             line-height: 22px;
                             font-weight: 400;
                             color: rgba(0, 123, 255, 1);
+                            width: 492px;
 
                             .span {
                                 font-weight: 700;
@@ -96,20 +96,20 @@
                 height: 405px;
 
                 .tipsTitle {
-                    font-size: 45px;
+                    font-size: 36px;
                     line-height: 48px;
                     font-weight: 400;
                     color: rgba(85, 26, 139, 1);
                     font-family: Archivo;
-                    margin: 66px 0 65px; // Combina margin-top e margin-bottom
+                    margin: 66px 0 65px;
                 }
 
                 .tipsDescription {
                     font-family: Inter;
-                    width: 492px;
                     font-size: 20px;
                     line-height: 23px;
                     font-weight: 400;
+                    width: 492px;
                 }
             }
         }
