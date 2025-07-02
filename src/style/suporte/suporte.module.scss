@@ -1,0 +1,55 @@
+.suportePage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    .mainContent {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 50px;
+        padding: 20px;
+
+        .section {
+            width: 1075px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+            .title {
+                width: 220px;
+                text-align: center;
+                font-size: 45px;
+                line-height: 64px;
+                font-weight: 400;
+                color: rgba(85, 26, 139, 1);
+            }
+
+            .subtitle {
+                width: 380px;
+                text-align: center;
+                font-family: Archivo;
+                font-size: 24px;
+                line-height: 36px;
+                font-weight: 900;
+                color: rgba(75, 121, 255, 1);
+            }
+
+            .description {
+                width: 1075px;
+                text-align: center;
+                font-family: Inter;
+                font-size: 15px;
+                line-height: 24px;
+                font-weight: 400;
+                color: rgba(51, 51, 51, 1);
+            }
+        }
+    }
+}
