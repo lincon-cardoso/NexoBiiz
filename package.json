@@ -13,7 +13,7 @@
     "bcryptjs": "^3.0.2",
     "critters": "^0.0.23",
     "jsonwebtoken": "^9.0.2",
-    "next": "15.2.4",
+    "next": "^15.2.4",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -39,7 +39,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/lincon-cardoso/NexoBiiz/issues"
   },

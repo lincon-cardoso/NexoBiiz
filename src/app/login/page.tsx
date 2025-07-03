@@ -7,16 +7,42 @@ import styles from "@/style/login/login.module.scss";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Adicione lógica de autenticação aqui
-    console.log({ email, password });
+  const resetStates = () => {
+    setEmail("");
+    setPassword("");
+    setError("");
   };
 
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        router.push("/dashboard"); // Redireciona para o dashboard
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "Erro ao fazer login");
+      }
+    } catch (error) {
+      setError("Erro de conexão com o servidor");
+      console.error("Erro:", error);
+    }
+  };
+  
   const handleLogout = () => {
-    router.push("/");
+    resetStates();
+    router.push("/"); // Redireciona para a página inicial
   };
 
   return (
@@ -35,6 +61,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              aria-label="Digite seu email"
             />
             <label htmlFor="password" className={styles.label}>
               Senha
@@ -46,12 +73,18 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              aria-label="Digite sua senha"
             />
+            {error && <div className={styles.error}>{error}</div>}
             <div className={styles.buttonContainer}>
               <button type="submit" className={styles.submitButton}>
                 Entrar
               </button>
-              <button onClick={handleLogout} className={styles.logoutButton}>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className={styles.logoutButton}
+              >
                 Sair
               </button>
             </div>
