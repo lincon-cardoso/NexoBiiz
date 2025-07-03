@@ -1,18 +1,20 @@
+// Estilo principal da página de registro
 .registerPage {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     background-color: #f5f5f5;
-    
+
+    // Container principal do formulário de registro
     .registerContainer {
         background: #fff;
         padding: 2rem;
         border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);        
-        height: auto;
-        width: 400px;
-        
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 450px;
+
+        // Título do formulário
         .registerTitle {
             font-size: 1.5rem;
             font-weight: bold;
@@ -20,21 +22,25 @@
             margin-bottom: 1.5rem;
         }
 
+        // Estilo do formulário
         .registerForm {
             display: flex;
             flex-direction: column;
             gap: 1rem;
 
+            // Grupo de campos do formulário
             .formGroup {
                 display: flex;
                 flex-direction: column;
 
+                // Estilo do rótulo dos campos
                 .formLabel {
                     font-size: 0.875rem;
                     margin-bottom: 0.5rem;
                     color: #333;
                 }
 
+                // Estilo dos campos de entrada
                 .formInput {
                     padding: 0.75rem;
                     border: 1px solid #ccc;
@@ -48,6 +54,7 @@
                     }
                 }
 
+                // Estilo para mensagens de erro
                 .error {
                     color: red;
                     font-size: 0.875rem;
@@ -55,6 +62,7 @@
                 }
             }
 
+            // Estilo do botão de envio
             .formButton {
                 padding: 0.75rem;
                 background-color: #007bff;
