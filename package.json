@@ -9,8 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^6.11.0",
+    "bcryptjs": "^3.0.2",
     "critters": "^0.0.23",
+    "jsonwebtoken": "^9.0.2",
     "next": "15.2.4",
+    "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
@@ -23,6 +27,21 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
+    "prisma": "^6.11.0",
     "typescript": "^5"
-  }
+  },
+  "description": "O **Nexobiiz** é um sistema ERP (Enterprise Resource Planning) simples e acessível, desenvolvido como parte de um projeto acadêmico com foco em impacto social. Ele foi criado para atender as necessidades de pequenos negócios de bairro, oferecendo uma solução prática e gratuita para ajudar microempreendedores a gerenciar seus negócios com mais eficiência e autonomia.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lincon-cardoso/NexoBiiz.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/lincon-cardoso/NexoBiiz/issues"
+  },
+  "homepage": "https://github.com/lincon-cardoso/NexoBiiz#readme"
 }
