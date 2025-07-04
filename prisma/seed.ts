@@ -1,0 +1,20 @@
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+
+async function main() {
+  const user = await prisma.user.create({
+    data: {
+      name: "John Doe",
+      email: "john.doe@example.com",
+      password: "securepassword",
+      company: "NexoBiiz",
+      cnpj: "12345678901234",
+      phone: "1234567890",
+    },
+  });
+  console.log(user);
+}
+
+main()
+  .catch((e) => console.error(e))
+  .finally(() => prisma.$disconnect());

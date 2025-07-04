@@ -8,12 +8,12 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement()) // ID único do usuário
-  name      String   // Nome do usuário
-  email     String   @unique // Email único
-  password  String   // Senha do usuário
-  company   String   // Nome da empresa
-  cnpj      String   @unique // CNPJ único
-  phone     String   // Telefone do usuário
-  createdAt DateTime @default(now()) // Data de criação
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  company   String
+  cnpj      String   @unique
+  phone     String
+  createdAt DateTime @default(now())
 }

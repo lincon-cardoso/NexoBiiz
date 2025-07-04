@@ -32,12 +32,17 @@
             .formGroup {
                 display: flex;
                 flex-direction: column;
+                position: relative;
 
                 // Estilo do rótulo dos campos
                 .formLabel {
                     font-size: 0.875rem;
                     margin-bottom: 0.5rem;
                     color: #333;
+
+                    &.error {
+                        color: #ff4d4d; // Vermelho para o texto do label em erro
+                    }
                 }
 
                 // Estilo dos campos de entrada
@@ -52,6 +57,12 @@
                         border-color: #007bff;
                         outline: none;
                     }
+
+                    &.error {
+                        border: 2px solid #ff4d4d;
+                        background-color: #ffe6e6;
+                        animation: fade-in 0.3s ease-in-out;
+                    }
                 }
 
                 // Estilo para mensagens de erro
@@ -59,6 +70,13 @@
                     color: red;
                     font-size: 0.875rem;
                     margin-top: 0.25rem;
+                }
+
+                .errorMessage {
+                    color: #ff4d4d;
+                    font-size: 0.9rem;
+                    margin-top: 0.5rem;
+                    animation: fade-in 0.3s ease-in-out;
                 }
             }
 
@@ -78,5 +96,15 @@
                 }
             }
         }
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
     }
 }

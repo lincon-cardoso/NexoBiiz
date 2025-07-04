@@ -9,26 +9,31 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@prisma/client": "^6.11.0",
+    "@prisma/client": "^6.11.1",
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "critters": "^0.0.23",
+    "dotenv": "^17.0.1",
     "jsonwebtoken": "^9.0.2",
     "next": "^15.2.4",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "sass": "^1.86.3"
+    "sass": "^1.86.3",
+    "zod": "^3.25.71"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
-    "prisma": "^6.11.0",
-    "typescript": "^5"
+    "prisma": "^6.11.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   },
   "description": "O **Nexobiiz** é um sistema ERP (Enterprise Resource Planning) simples e acessível, desenvolvido como parte de um projeto acadêmico com foco em impacto social. Ele foi criado para atender as necessidades de pequenos negócios de bairro, oferecendo uma solução prática e gratuita para ajudar microempreendedores a gerenciar seus negócios com mais eficiência e autonomia.",
   "main": "index.js",
