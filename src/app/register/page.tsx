@@ -119,6 +119,7 @@ export default function RegisterPage() {
     }
   };
 
+
   return (
     <main className={styles.registerPage}>
       <div className={styles.registerContainer}>
@@ -263,4 +264,3 @@ export default function RegisterPage() {
     </main>
   );
 }
-

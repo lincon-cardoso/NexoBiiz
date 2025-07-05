@@ -4,13 +4,18 @@ export function validateCNPJ(cnpj: string): boolean {
   return regex.test(cnpj);
 }
 
-// Função para formatar o CNPJ
+// Função para formatar progressivamente o CNPJ
 export function formatCNPJ(cnpj: string): string {
-  const cleanCNPJ = cnpj.replace(/\D/g, "");
-  return cleanCNPJ
-    .replace(/(\d{2})/, "$1.")
-    .replace(/(\d{2}\.\d{3})/, "$1.")
-    .replace(/(\d{2}\.\d{3}\.\d{3})/, "$1/")
-    .replace(/(\d{2}\.\d{3}\.\d{3}\/\d{4})/, "$1-")
-    .slice(0, 18); // Limita ao tamanho máximo do CNPJ formatado
+  const cleanValue = cnpj.replace(/\D/g, "");
+  let formattedValue = "";
+
+  for (let i = 0; i < cleanValue.length; i++) {
+    if (i === 2) formattedValue += ".";
+    if (i === 5) formattedValue += ".";
+    if (i === 8) formattedValue += "/";
+    if (i === 12) formattedValue += "-";
+    formattedValue += cleanValue[i];
+  }
+
+  return formattedValue;
 }
