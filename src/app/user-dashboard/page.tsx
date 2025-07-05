@@ -26,15 +26,9 @@ export default function UserDashboardPage() {
     async function fetchData() {
       try {
         console.time("fetchData");
-        const response = await fetch("/api/user-dashboard");
-        const text = await response.clone().text();
+        const response = await fetch("/api/dashboard");
         if (!response.ok) {
-          console.error(
-            "Erro no user-dashboard:",
-            response.status,
-            response.statusText,
-            text
-          );
+          const text = await response.text();
           setError(
             `Erro no user-dashboard: ${response.status} ${response.statusText} - ${text}`
           );
@@ -45,8 +39,7 @@ export default function UserDashboardPage() {
         setDashboardData(data);
         console.timeEnd("fetchData");
       } catch (error) {
-        console.error("Erro ao buscar dados do user-dashboard:", error);
-        setError(`Erro ao buscar dados do user-dashboard: ${error}`);
+        setError(`Erro ao buscar dados do dashboard: ${error}`);
         setDashboardData(null);
       }
     }
