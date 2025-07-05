@@ -14,7 +14,7 @@ interface UserData {
   };
 }
 
-export default function DashboardPage() {
+export default function UserDashboardPage() {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
     null
   );
@@ -26,17 +26,17 @@ export default function DashboardPage() {
     async function fetchData() {
       try {
         console.time("fetchData");
-        const response = await fetch("/api/dashboard");
+        const response = await fetch("/api/user-dashboard");
         const text = await response.clone().text();
         if (!response.ok) {
           console.error(
-            "Erro no dashboard:",
+            "Erro no user-dashboard:",
             response.status,
             response.statusText,
             text
           );
           setError(
-            `Erro no dashboard: ${response.status} ${response.statusText} - ${text}`
+            `Erro no user-dashboard: ${response.status} ${response.statusText} - ${text}`
           );
           setDashboardData(null);
           return;
@@ -45,8 +45,8 @@ export default function DashboardPage() {
         setDashboardData(data);
         console.timeEnd("fetchData");
       } catch (error) {
-        console.error("Erro ao buscar dados do dashboard:", error);
-        setError(`Erro ao buscar dados do dashboard: ${error}`);
+        console.error("Erro ao buscar dados do user-dashboard:", error);
+        setError(`Erro ao buscar dados do user-dashboard: ${error}`);
         setDashboardData(null);
       }
     }
@@ -88,7 +88,7 @@ export default function DashboardPage() {
 
   return (
     <div>
-      <h1>Dashboard</h1>
+      <h1>User Dashboard</h1>
       <h2>
         Welcome, {dashboardData.userName || userData.user.name || "Usuário"}!
       </h2>

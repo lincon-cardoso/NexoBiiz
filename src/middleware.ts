@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Rotas protegidas (exemplo: dashboard)
-  const protectedRoutes = ["/dashboard"];
+  const protectedRoutes = ["/user-dashboard"];
   if (protectedRoutes.some((route) => pathname.startsWith(route))) {
     const accessToken = request.cookies.get("accessToken")?.value;
     if (!accessToken) {

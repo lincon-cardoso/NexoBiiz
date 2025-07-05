@@ -23,7 +23,7 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      router.push("/dashboard"); // Redireciona para o dashboard
+      router.push("/user-dashboard"); // Redireciona para o dashboard
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Erro ao fazer login";
