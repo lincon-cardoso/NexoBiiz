@@ -48,14 +48,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAccessToken(data.accessToken);
       router.push("/dashboard");
     } else {
-      throw new Error("Login falhou");
+      let msg = "Login falhou";
+      try {
+        const err = await res.json();
+        msg = err.message || msg;
+      } catch {}
+      throw new Error(msg);
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    // Remove tokens do localStorage e cookies via API
     localStorage.removeItem("accessToken");
     setAccessToken(null);
+    await fetch("/api/logout", { method: "POST", credentials: "include" });
     router.push("/login");
+    if (typeof window !== "undefined") {
+      setTimeout(() => window.location.reload(), 100);
+    }
   };
 
   return (

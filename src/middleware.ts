@@ -32,6 +32,21 @@ export function middleware(request: NextRequest) {
   }
 
   // Rate limiting global para rotas de API
+  // Exemplo: liberar o IP local do rate limit apenas em desenvolvimento
+  const myDevIp = "127.0.0.1";
+  if (process.env.NODE_ENV !== "production" && pathname.startsWith("/api/")) {
+    let ip =
+      request.headers.get("x-forwarded-for") ||
+      request.headers.get("x-real-ip") ||
+      request.nextUrl.hostname ||
+      "unknown";
+    if (ip.includes(",")) ip = ip.split(",")[0].trim();
+    if (ip === myDevIp) {
+      // Libera o IP do rate limit
+      return NextResponse.next();
+    }
+  }
+
   if (pathname.startsWith("/api/")) {
     let ip =
       request.headers.get("x-forwarded-for") ||
