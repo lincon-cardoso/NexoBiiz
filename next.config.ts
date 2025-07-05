@@ -60,7 +60,10 @@ const nextConfig: NextConfig = {
               "'sha256-nzgVfPFR9NICOq2OkFtq0jS0lY6er6grjpE0ZElXBV0=' " +
               "'sha256-bM1AX8tDHA4vP4LwnwbHy065kbap/jSMBEIs0eQOeCk=' " +
               "'sha256-K/ckGTZAiQkxDEn081iYlLvd3Kc2VCcwzyhoS/91j5U=' " +
-              "'sha256-8K78zQME8uoSkAVCMN+ZvP8nfSlfSKedY9exVHyP+oE='; " +
+              "'sha256-8K78zQME8uoSkAVCMN+ZvP8nfSlfSKedY9exVHyP+oE=' " +
+              "'sha256-AU+ly8zuV4CLU5JdwjV3/eNvtCW/+1O2k1GrkdnsJiU=' " +
+              "'sha256-hyZela/1uOH+B6l3LYW8BYNu78m2JK6dQmgnRKLHXjM=' " +
+              "'sha256-8P8Hryud1pei0pt/11+6BlQfBCAESFPO0gRIyRKythk='; " +
               "style-src 'self' 'unsafe-hashes' 'sha256-zlqnbDt84zf1iSefLU/ImC54isoprH/MRiVZGskwexk=';",
           },
           { key: "Access-Control-Allow-Origin", value: "*" },
