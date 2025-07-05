@@ -67,7 +67,11 @@ const nextConfig: NextConfig = {
               "'sha256-6FWzdEDbLe/VIjGuonne5OWKwIHRHEelKuAia4uNsE8=' " +
               "'sha256-YeZ9f2nOtw+sLDPWfSYzO4WQGNgrdR7c1K/gbE43Qk4=' " +
               "'sha256-mhENM3dNjuQLweTFQUHs3amtK9Wdt3gn4bYgXTWYo6w=' " +
-              "'sha256-z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg=='; " +
+              "'sha256-z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==' " +
+              "'sha256-n9ZI7V7Gyyeflwv0gI/vw8J/qv461qDVIawSP3UqMMM=' " +
+              "'sha256-TyBfx3N4No0TcSSfEWDcpmjZhG+jZottrpmyDXhGigk=' " +
+              "'sha256-WydCWP4FCgyGow2jsOUeoSUHzl9axfNBvNXzmTpM+Ho=' " +
+              "'sha256-YeGXg5jnQizgi0NQPZ23HfUVmf1kYIfYb1LRvRjzqqQ='; " +
               "style-src 'self' 'unsafe-hashes' 'sha256-zlqnbDt84zf1iSefLU/ImC54isoprH/MRiVZGskwexk=';",
           },
           { key: "Access-Control-Allow-Origin", value: "*" },
