@@ -45,19 +45,23 @@ const nextConfig: NextConfig = {
           { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
           {
             key: "Content-Security-Policy",
-            value: "default-src 'self' https://static.cloudflareinsights.com; " +
-                   "script-src 'self' https://static.cloudflareinsights.com " +
-                   "'sha256-bZP3iMM5Cko4Dq+aF6EkaXeCcf3hOL4hqb/6FETUDCg=' " +
-                   "'sha256-LcsuUMiDkprrt6ZKeiLP4iYNhWo8NqaSbAgtoZxVK3s=' " +
-                   "'sha256-OBTN3RiyCV4Bq7dFqZ5a2pAXjnCcCYeTJMO2I/LYKeo=' " +
-                   "'sha256-BnUO1cTGRJSLoOHjFT/xlPM4jHk2N900AVCGZDChfe8=' " +
-                   "'sha256-lpsso/ATFdqCbhjOT6RiFaRYtjiKFKJpnM1W3/8yBp8=' " +
-                   "'sha256-l+jHIJXHnxOxTurmIRe1AIXFS88HmAoYDCQuFyf07Kw=' " +
-                   "'sha256-TYibgXe4t0lwR6Cf+3zooXQPQox0ZlhSywk024wdd3Q=' " +
-                   "'sha256-GlmiYYLPAKS0avPr3mUIYhwG3CJ25ZZxJYTDLHfq1P8=' " +
-                   "'sha256-UlT6OsMG+SlfIrv8HljCVvUtKpdLUrHLpaI064+Q5ns=' " +
-                   "'sha256-nzgVfPFR9NICOq2OkFtq0jS0lY6er6grjpE0ZElXBV0='; " +
-                   "style-src 'self' 'unsafe-hashes' 'sha256-zlqnbDt84zf1iSefLU/ImC54isoprH/MRiVZGskwexk=';",
+            value:
+              "default-src 'self' https://static.cloudflareinsights.com; " +
+              "script-src 'self' https://static.cloudflareinsights.com " +
+              "'sha256-bZP3iMM5Cko4Dq+aF6EkaXeCcf3hOL4hqb/6FETUDCg=' " +
+              "'sha256-LcsuUMiDkprrt6ZKeiLP4iYNhWo8NqaSbAgtoZxVK3s=' " +
+              "'sha256-OBTN3RiyCV4Bq7dFqZ5a2pAXjnCcCYeTJMO2I/LYKeo=' " +
+              "'sha256-BnUO1cTGRJSLoOHjFT/xlPM4jHk2N900AVCGZDChfe8=' " +
+              "'sha256-lpsso/ATFdqCbhjOT6RiFaRYtjiKFKJpnM1W3/8yBp8=' " +
+              "'sha256-l+jHIJXHnxOxTurmIRe1AIXFS88HmAoYDCQuFyf07Kw=' " +
+              "'sha256-TYibgXe4t0lwR6Cf+3zooXQPQox0ZlhSywk024wdd3Q=' " +
+              "'sha256-GlmiYYLPAKS0avPr3mUIYhwG3CJ25ZZxJYTDLHfq1P8=' " +
+              "'sha256-UlT6OsMG+SlfIrv8HljCVvUtKpdLUrHLpaI064+Q5ns=' " +
+              "'sha256-nzgVfPFR9NICOq2OkFtq0jS0lY6er6grjpE0ZElXBV0=' " +
+              "'sha256-bM1AX8tDHA4vP4LwnwbHy065kbap/jSMBEIs0eQOeCk=' " +
+              "'sha256-K/ckGTZAiQkxDEn081iYlLvd3Kc2VCcwzyhoS/91j5U=' " +
+              "'sha256-8K78zQME8uoSkAVCMN+ZvP8nfSlfSKedY9exVHyP+oE='; " +
+              "style-src 'self' 'unsafe-hashes' 'sha256-zlqnbDt84zf1iSefLU/ImC54isoprH/MRiVZGskwexk=';",
           },
           { key: "Access-Control-Allow-Origin", value: "*" },
         ],
@@ -74,7 +78,7 @@ const nextConfig: NextConfig = {
         ],
       },
 
-      // 🔹 Cache agressivo para imagens otimizadas 
+      // 🔹 Cache agressivo para imagens otimizadas
       {
         source: "/_next/image",
         headers: [
