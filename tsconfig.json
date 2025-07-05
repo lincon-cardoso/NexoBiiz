@@ -15,15 +15,15 @@
     "incremental": true,
     "strictNullChecks": true, // Added
     "forceConsistentCasingInFileNames": true, // Added
-    "baseUrl": ".",
+    "baseUrl": "./", // Garantido
+    "paths": {
+      "@/*": ["src/*"] // Garantido
+    },
     "plugins": [
       {
         "name": "next"
       }
-    ],
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    ]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

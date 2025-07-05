@@ -4,6 +4,7 @@ import { z } from "zod";
 import { useRouter } from "next/navigation"; // Substituir Router por useRouter
 import styles from "@/style/register/register.module.scss";
 import Link from "next/link";
+import { validateCNPJ, formatCNPJ } from "@/lib/cnpjUtils";
 
 // Definir o esquema de validação com Zod
 const userSchema = z.object({
@@ -11,7 +12,12 @@ const userSchema = z.object({
   email: z.string().email("Email inválido."),
   password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres."),
   company: z.string().optional(),
-  cnpj: z.string().length(14, "O CNPJ deve ter exatamente 14 caracteres."),
+  cnpj: z
+    .string()
+    .refine(
+      validateCNPJ,
+      "CNPJ inválido. Certifique-se de que está no formato correto."
+    ),
   phone: z.string().min(10, "O telefone deve ter pelo menos 10 caracteres."),
 });
 
@@ -45,7 +51,8 @@ export default function RegisterPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    const formattedValue = name === "cnpj" ? formatCNPJ(value) : value;
+    setFormData((prevData) => ({ ...prevData, [name]: formattedValue }));
     setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
   };
 
@@ -111,9 +118,6 @@ export default function RegisterPage() {
       }
     }
   };
-
-  console.log("Estado inicial do formulário:", formData);
-  console.log("Estado inicial de erros:", errors);
 
   return (
     <main className={styles.registerPage}>
@@ -225,6 +229,7 @@ export default function RegisterPage() {
                 errors.cnpj ? styles.error : ""
               }`}
               placeholder="Digite o CNPJ"
+              maxLength={18} // Limita o número de caracteres ao tamanho máximo do CNPJ formatado
             />
             {errors.cnpj && (
               <p className={styles.errorMessage}>{errors.cnpj}</p>
@@ -258,3 +263,4 @@ export default function RegisterPage() {
     </main>
   );
 }
+
