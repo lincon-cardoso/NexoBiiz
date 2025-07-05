@@ -28,8 +28,6 @@ export default async function RootLayout({
           nonce={nonce}
           async
         />
-        {/* Carrega init externo em /scripts/init.js */}
-        <script src="/scripts/init.js" nonce={nonce} async />
       </head>
       <body>
         <AuthProvider>{children}</AuthProvider>

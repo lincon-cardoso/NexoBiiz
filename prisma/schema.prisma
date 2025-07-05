@@ -17,3 +17,12 @@ model User {
   phone     String
   createdAt DateTime @default(now())
 }
+
+model ScriptEvents {
+  id         Int      @id @default(autoincrement())
+  scriptName String
+  eventType  String
+  timestamp  DateTime @default(now())
+
+  @@map("scriptevents")
+}

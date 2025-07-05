@@ -60,6 +60,15 @@ export async function POST(request: Request) {
       });
       console.log("Usuário criado:", user);
 
+      // Registrar evento na tabela ScriptEvents
+      const scriptEvent = await prisma.scriptEvents.create({
+        data: {
+          scriptName: "register",
+          eventType: "USER_CREATED",
+        },
+      });
+      console.log("Evento registrado:", scriptEvent);
+
       // Adicionar headers de segurança na resposta
       const response = NextResponse.json({
         message: "Registro bem-sucedido",

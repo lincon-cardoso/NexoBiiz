@@ -1,0 +1,6 @@
+CREATE TABLE ScriptEvents (
+    id SERIAL PRIMARY KEY,
+    script_name VARCHAR(255) NOT NULL,
+    event_type VARCHAR(50) NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -79,16 +79,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-
-  async redirects() {
-    return [
-      {
-        source: "/(.*)",
-        destination: "https://nexobiiz.devlincon.com.br/$1",
-        permanent: true,
-      },
-    ];
-  },
+  
 };
 
 export default bundleAnalyzer(nextConfig);
