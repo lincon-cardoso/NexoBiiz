@@ -80,6 +80,7 @@ export default function RegisterPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Origin: window.location.origin, // Adiciona o cabeçalho Origin
         },
         body: JSON.stringify(parsedData),
       });
@@ -94,6 +95,13 @@ export default function RegisterPage() {
         const error = await response.json();
         setErrorMessage(error.message || "Erro ao registrar usuário.");
         console.error("Erro da API:", error.errors || error.message);
+
+        // Tratamento adicional para erros de CORS
+        if (response.status === 0) {
+          setErrorMessage(
+            "Erro de CORS: Verifique as configurações do servidor."
+          );
+        }
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -118,7 +126,6 @@ export default function RegisterPage() {
       }
     }
   };
-
 
   return (
     <main className={styles.registerPage}>
