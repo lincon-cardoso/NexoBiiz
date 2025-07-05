@@ -1,9 +1,12 @@
-import Redis from "ioredis";
+import Redis, { RedisOptions } from "ioredis";
 
-// Configuração do cliente Redis
-const redisClient = new Redis({
-  host: "localhost",
-  port: 6379,
-});
-
-export default redisClient;
+// Conectar ao Redis do Railway via URL ou variáveis de ambiente separadas
+const redisUrl =
+  process.env.REDIS_URL ||
+  `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`;
+// Configurações do Redis (inclui senha, se fornecida)
+const redisOptions: RedisOptions = {
+  ...(process.env.REDIS_PASSWORD && { password: process.env.REDIS_PASSWORD }),
+};
+// Instância do cliente Redis
+export const redis = new Redis(redisUrl, redisOptions);

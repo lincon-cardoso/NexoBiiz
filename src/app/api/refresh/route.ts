@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     res.cookies.set("accessToken", newAccessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      sameSite: "strict",
       path: "/",
       maxAge: 60 * 15, // 15 minutos
     });

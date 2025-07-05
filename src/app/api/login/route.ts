@@ -1,50 +1,51 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import argon2 from "argon2";
 import { z } from "zod";
 import jwt from "jsonwebtoken";
-import { errorMessages } from "@/constants/errorMessages";
-import { csrfValidator } from "@/middleware/csrfValidator";
-import { loginRateLimiter } from "@/middleware/rateLimiter";
+import { rateLimit } from "@/lib/rateLimit";
+import { redis } from "@/lib/redisClient";
+
+// prisma singleton import acima replaces new PrismaClient()
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido."),
   password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres."),
 });
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Método não permitido." });
-  }
-
-  // Aplicar middlewares
-  loginRateLimiter(req, res, () => {});
-  csrfValidator(req, res, () => {});
-
+export async function POST(request: Request) {
   try {
-    const data = await req.body;
+    // Rate limit per IP
+    const ip =
+      request.headers.get("x-forwarded-for") ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+    await rateLimit(`login:${ip}`);
+
+    const data = await request.json();
     const { email, password } = loginSchema.parse(data);
 
+    // Verificar usuário e comparar senha (dummy hash para timing attacks)
     const user = await prisma.user.findUnique({ where: { email } });
     const storedHash = user
       ? user.password
       : await argon2.hash("invalid-password");
-    if (!user) {
-      return res
-        .status(401)
-        .json({ message: errorMessages.INVALID_CREDENTIALS });
-    }
-
     const isValid = await argon2.verify(storedHash, password);
-    if (!isValid) {
-      return res
-        .status(401)
-        .json({ message: errorMessages.INCORRECT_PASSWORD });
+    if (!isValid || !user) {
+      return NextResponse.json(
+        { message: "Credenciais inválidas" },
+        { status: 401 }
+      );
     }
 
+    // Limpar contador de rate limit em Redis após sucesso
+    const userIp =
+      request.headers.get("x-forwarded-for") ||
+      request.headers.get("x-real-ip") ||
+      "unknown";
+    await redis.del(`login:${userIp}`);
+
+    // Autenticação bem-sucedida: gerar tokens
     const accessToken = jwt.sign(
       { userId: user.id },
       process.env.JWT_ACCESS_SECRET!,
@@ -55,33 +56,41 @@ export default async function handler(
       process.env.JWT_REFRESH_SECRET!,
       { expiresIn: "7d" }
     );
-
-    res.setHeader("Set-Cookie", [
-      `accessToken=${accessToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=900`,
-      `refreshToken=${refreshToken}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=604800`,
-    ]);
-
-    res.setHeader(
-      "Content-Security-Policy",
-      "default-src 'self'; script-src 'self'; object-src 'none'"
-    );
-    res.setHeader("X-Frame-Options", "DENY");
-    res.setHeader("X-Content-Type-Options", "nosniff");
-
-    return res.status(200).json({
-      message: errorMessages.LOGIN_SUCCESS,
-      accessToken,
-      user: { id: user.id },
+    // Enviar accessToken e refreshToken em cookies HttpOnly
+    const res = NextResponse.json({ user: { id: user.id } }, { status: 200 });
+    res.cookies.set("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 15, // 15 minutos
     });
+    res.cookies.set("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60, // 7 dias
+    });
+    return res;
   } catch (error) {
+    // Tratamento de rate limit do Redis
+    if (error instanceof Error && error.message === "RATE_LIMITED") {
+      return NextResponse.json(
+        { message: "Muitas tentativas. Tente novamente mais tarde." },
+        { status: 429 }
+      );
+    }
     if (error instanceof z.ZodError) {
-      return res
-        .status(400)
-        .json({ message: errorMessages.LOGIN_FAILED, errors: error.errors });
+      return NextResponse.json(
+        { message: "Dados inválidos.", errors: error.errors },
+        { status: 400 }
+      );
     }
     console.error("Erro no login:", error);
-    return res
-      .status(500)
-      .json({ message: errorMessages.AUTHENTICATION_ERROR });
+    return NextResponse.json(
+      { message: "Erro interno no servidor." },
+      { status: 500 }
+    );
   }
 }

@@ -75,6 +75,7 @@ export default function RegisterPage() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
+<<<<<<< HEAD
       // Refatoração: fluxo robusto para CSRF
       // 1. GET para garantir o CSRF token atualizado
       await fetch("/api/register", { method: "GET", credentials: "include" });
@@ -101,14 +102,21 @@ export default function RegisterPage() {
       }
 
       // 3. POST com o header x-csrf-token
+=======
+>>>>>>> 6ef3936 (feat: implement user authentication with JWT and Redis rate limiting)
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+<<<<<<< HEAD
           "x-csrf-token": csrfToken,
         },
         credentials: "include",
+=======
+        },
+        credentials: "same-origin",
+>>>>>>> 6ef3936 (feat: implement user authentication with JWT and Redis rate limiting)
         signal: controller.signal,
         body: JSON.stringify(parsedData),
       });
@@ -118,6 +126,7 @@ export default function RegisterPage() {
       if (response.ok) {
         // Registro bem-sucedido: faz login automático
         clearForm();
+<<<<<<< HEAD
         // Garante CSRF token atualizado antes do login
         await fetch("/api/login", { method: "GET", credentials: "include" });
         await login(parsedData.email, parsedData.password);
@@ -133,6 +142,13 @@ export default function RegisterPage() {
           apiError.errors || apiError.message,
           apiError.details
         );
+=======
+        await login(parsedData.email, parsedData.password);
+      } else {
+        const apiError = await response.json();
+        setErrorMessage(apiError.message || "Erro ao registrar usuário.");
+        console.error("Erro da API:", apiError.errors || apiError.message);
+>>>>>>> 6ef3936 (feat: implement user authentication with JWT and Redis rate limiting)
 
         if (response.status === 500) {
           setErrorMessage(

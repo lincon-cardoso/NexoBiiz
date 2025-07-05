@@ -25,8 +25,12 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
+<<<<<<< HEAD
       setSuccess("Entrando...");
       setTimeout(() => router.push("/dashboard"), 1000); // Redireciona após 1 segundo
+=======
+      router.push("/dashboard"); // Redireciona para o dashboard
+>>>>>>> 6ef3936 (feat: implement user authentication with JWT and Redis rate limiting)
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Erro ao fazer login";

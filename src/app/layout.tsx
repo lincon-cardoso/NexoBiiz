@@ -21,17 +21,7 @@ export default async function RootLayout({
 
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <head>
-        {/* Analytics script permitido via CSP com nonce */}
-        <script
-          src="https://www.googletagmanager.com/gtm.js?id=GTM-XXXX"
-          nonce={nonce}
-          async
-        />
-      </head>
-      <body>
-        <AuthProvider>{children}</AuthProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
