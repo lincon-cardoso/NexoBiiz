@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import styles from "@/style/login/login.module.scss";
 
 export default function LoginPage() {
@@ -9,6 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const { login } = useAuth();
 
   const resetStates = () => {
     setEmail("");
@@ -20,26 +22,15 @@ export default function LoginPage() {
     event.preventDefault();
 
     try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        router.push("/dashboard"); // Redireciona para o dashboard
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Erro ao fazer login");
-      }
+      await login(email, password);
+      router.push("/dashboard"); // Redireciona para o dashboard
     } catch (error) {
-      setError("Erro de conexão com o servidor");
-      console.error("Erro:", error);
+      const message =
+        error instanceof Error ? error.message : "Erro ao fazer login";
+      setError(message);
     }
   };
-  
+
   const handleLogout = () => {
     resetStates();
     router.push("/"); // Redireciona para a página inicial

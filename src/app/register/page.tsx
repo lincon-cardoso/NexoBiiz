@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import { z } from "zod";
-import { useRouter } from "next/navigation";
 import styles from "@/style/register/register.module.scss";
 import Link from "next/link";
 import { validateCNPJ, formatCNPJ } from "@/lib/cnpjUtils";
+import { useAuth } from "@/context/AuthContext";
 
 const userSchema = z.object({
   name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres."),
@@ -21,7 +21,7 @@ const userSchema = z.object({
 });
 
 export default function RegisterPage() {
-  const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -71,25 +71,31 @@ export default function RegisterPage() {
       userSchema.parse(parsedData);
       console.log("Dados validados no frontend:", parsedData);
 
+      // Inicia controle de timeout para a requisição
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Origin: window.location.origin,
+          Accept: "application/json",
         },
+        credentials: "same-origin",
+        signal: controller.signal,
         body: JSON.stringify(parsedData),
       });
 
+      clearTimeout(timeoutId);
+
       if (response.ok) {
-        console.log("Resposta do backend:", response);
-        const responseData = await response.json();
-        console.log("Dados retornados pela API:", responseData);
+        // Registro bem-sucedido: faz login automático
         clearForm();
-        router.push("/login");
+        await login(parsedData.email, parsedData.password);
       } else {
-        const error = await response.json();
-        setErrorMessage(error.message || "Erro ao registrar usuário.");
-        console.error("Erro da API:", error.errors || error.message);
+        const apiError = await response.json();
+        setErrorMessage(apiError.message || "Erro ao registrar usuário.");
+        console.error("Erro da API:", apiError.errors || apiError.message);
 
         if (response.status === 500) {
           setErrorMessage(
@@ -107,7 +113,7 @@ export default function RegisterPage() {
           );
         }
       }
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof z.ZodError) {
         const fieldErrors = error.errors.reduce(
           (acc, err) => {
@@ -122,6 +128,8 @@ export default function RegisterPage() {
           "Erro de validação: " +
             error.errors.map((err) => err.message).join(", ")
         );
+      } else if (error instanceof Error && error.name === "AbortError") {
+        setErrorMessage("Tempo de requisição excedido. Tente novamente.");
       } else if (error instanceof TypeError) {
         setErrorMessage("Erro de conexão com o servidor.");
       } else {
