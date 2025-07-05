@@ -59,7 +59,19 @@ export async function POST(request: Request) {
         },
       });
       console.log("Usuário criado:", user);
-      return NextResponse.json(user, { status: 201 });
+
+      // Adicionar headers de segurança na resposta
+      const response = NextResponse.json({
+        message: "Registro bem-sucedido",
+      });
+      response.headers.set(
+        "Content-Security-Policy",
+        "default-src 'self'; script-src 'self'; object-src 'none'"
+      );
+      response.headers.set("X-Frame-Options", "DENY");
+      response.headers.set("X-Content-Type-Options", "nosniff");
+
+      return response;
     } catch (prismaError) {
       console.error("Erro do Prisma ao criar usuário:", prismaError);
       return NextResponse.json(

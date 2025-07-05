@@ -75,5 +75,13 @@ export function middleware(request: NextRequest) {
       response.headers.set("Vary", "Origin");
     }
   }
+
+  // Configurar cookies seguros
+  response.cookies.set("authToken", "", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+  });
+
   return response;
 }

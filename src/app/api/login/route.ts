@@ -72,6 +72,15 @@ export async function POST(request: Request) {
       path: "/",
       maxAge: 7 * 24 * 60 * 60, // 7 dias
     });
+
+    // Adicionar headers de segurança na resposta
+    res.headers.set(
+      "Content-Security-Policy",
+      "default-src 'self'; script-src 'self'; object-src 'none'"
+    );
+    res.headers.set("X-Frame-Options", "DENY");
+    res.headers.set("X-Content-Type-Options", "nosniff");
+
     return res;
   } catch (error) {
     // Tratamento de rate limit do Redis

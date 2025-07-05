@@ -1,4 +1,9 @@
 import type { NextConfig } from "next";
+import withBundleAnalyzer from "@next/bundle-analyzer";
+
+const bundleAnalyzer = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -6,6 +11,11 @@ const nextConfig: NextConfig = {
 
   experimental: {
     optimizeCss: true, // Ativa otimização de CSS
+  },
+
+  images: {
+    domains: ["nexobiiz.devlincon.com.br"],
+    formats: ["image/webp", "image/avif"],
   },
 
   async headers() {
@@ -69,6 +79,16 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  async redirects() {
+    return [
+      {
+        source: "/(.*)",
+        destination: "https://nexobiiz.devlincon.com.br/$1",
+        permanent: true,
+      },
+    ];
+  },
 };
 
-export default nextConfig;
+export default bundleAnalyzer(nextConfig);

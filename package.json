@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/bundle-analyzer": "^15.3.5",
     "@prisma/client": "^6.11.1",
     "@upstash/redis": "^1.35.1",
     "argon2": "^0.43.0",
