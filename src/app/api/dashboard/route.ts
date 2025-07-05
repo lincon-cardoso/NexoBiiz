@@ -27,7 +27,7 @@ export async function GET(request: Request) {
     });
     // Exemplo de dados fictícios para o dashboard
     const dashboardData = {
-      message: "User Dashboard carregado com sucesso!",
+      message: "Dashboard carregado com sucesso!",
       data: {
         totalUsers: 42,
         totalCompanies: 7,
