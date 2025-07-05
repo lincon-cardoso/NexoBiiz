@@ -1,7 +1,8 @@
 // Função para validar o CNPJ
 export function validateCNPJ(cnpj: string): boolean {
-  const regex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
-  return regex.test(cnpj);
+  const cleanCNPJ = cnpj.replace(/\D/g, ""); // Remove caracteres não numéricos
+  const regex = /^\d{14}$/; // Valida apenas números
+  return regex.test(cleanCNPJ);
 }
 
 // Função para formatar progressivamente o CNPJ
