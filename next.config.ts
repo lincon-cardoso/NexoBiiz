@@ -62,7 +62,7 @@ const nextConfig: NextConfig = {
         ],
       },
 
-      // 🔹 Cache agressivo para imagens otimizadas do Next
+      // 🔹 Cache agressivo para imagens otimizadas 
       {
         source: "/_next/image",
         headers: [
