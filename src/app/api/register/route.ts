@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { rateLimit } from "@/lib/rateLimit";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import argon2 from "argon2";
@@ -16,13 +15,6 @@ const userSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    // Apply rate limiting
-    const ip =
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
-    // Aplicar rate limiting usando Redis
-    await rateLimit(ip);
     const data = await request.json();
     console.log("[API][register] Dados recebidos:", data);
 
@@ -92,12 +84,6 @@ export async function POST(request: Request) {
       );
     }
   } catch (error) {
-    if (error instanceof Error && error.message === "RATE_LIMITED") {
-      return NextResponse.json(
-        { message: "Muitas requisições. Tente novamente mais tarde." },
-        { status: 429 }
-      );
-    }
     if (error instanceof z.ZodError) {
       // Retornar erros de validação
       console.error("Erro de validação:", error.errors);

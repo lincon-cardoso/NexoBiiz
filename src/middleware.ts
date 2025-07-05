@@ -1,8 +1,66 @@
 import { NextResponse, NextRequest } from "next/server";
 // Usar Web Crypto API nativa (Edge Runtime) - não importar 'crypto'
 
+// Rate limiting simples em memória (apenas para dev/homologação)
+const rateLimitMap = new Map<string, { count: number; last: number }>();
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minuto
+const RATE_LIMIT_MAX = 20; // 20 requisições por janela
+
+// CSRF token para métodos de alteração de dados
+const CSRF_HEADER = "x-csrf-token";
+const CSRF_COOKIE = "csrf-token";
+
+function generateCsrfToken() {
+  // Gera um token simples (ideal: usar crypto.randomUUID ou crypto.getRandomValues)
+  return crypto.randomUUID();
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Rotas protegidas (exemplo: dashboard)
+  const protectedRoutes = ["/dashboard"];
+  if (protectedRoutes.some((route) => pathname.startsWith(route))) {
+    const accessToken = request.cookies.get("accessToken")?.value;
+    if (!accessToken) {
+      // Redireciona para login se não autenticado
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = "/login";
+      loginUrl.searchParams.set("from", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // Rate limiting global para rotas de API
+  if (pathname.startsWith("/api/")) {
+    let ip =
+      request.headers.get("x-forwarded-for") ||
+      request.headers.get("x-real-ip") ||
+      request.nextUrl.hostname ||
+      "unknown";
+    // Se múltiplos IPs, pega o primeiro
+    if (ip.includes(",")) ip = ip.split(",")[0].trim();
+
+    const now = Date.now();
+    const entry = rateLimitMap.get(ip) || { count: 0, last: now };
+    if (now - entry.last > RATE_LIMIT_WINDOW) {
+      // Nova janela
+      rateLimitMap.set(ip, { count: 1, last: now });
+    } else {
+      entry.count++;
+      entry.last = now;
+      rateLimitMap.set(ip, entry);
+      if (entry.count > RATE_LIMIT_MAX) {
+        return new NextResponse(
+          JSON.stringify({
+            message: "Rate limit exceeded. Tente novamente em instantes.",
+          }),
+          { status: 429, headers: { "Content-Type": "application/json" } }
+        );
+      }
+    }
+  }
+
   // Handle CORS preflight for API routes with explicit whitelist
   if (pathname.startsWith("/api/") && request.method === "OPTIONS") {
     const headers = new Headers();
@@ -82,6 +140,32 @@ export function middleware(request: NextRequest) {
     secure: true,
     sameSite: "strict",
   });
+
+  // CSRF protection para métodos sensíveis
+  const isApi = pathname.startsWith("/api/");
+  const isMutation = ["POST", "PUT", "PATCH", "DELETE"].includes(
+    request.method
+  );
+  if (isApi && isMutation) {
+    const csrfCookie = request.cookies.get(CSRF_COOKIE)?.value;
+    const csrfHeader = request.headers.get(CSRF_HEADER);
+    if (!csrfCookie || !csrfHeader || csrfCookie !== csrfHeader) {
+      return new NextResponse(
+        JSON.stringify({ message: "CSRF token inválido ou ausente." }),
+        { status: 403, headers: { "Content-Type": "application/json" } }
+      );
+    }
+  }
+
+  // Gera e envia CSRF token para GET em APIs (para frontend consumir)
+  if (isApi && request.method === "GET") {
+    const csrfToken = generateCsrfToken();
+    response.cookies.set(CSRF_COOKIE, csrfToken, {
+      httpOnly: false,
+      path: "/",
+    });
+    response.headers.set(CSRF_HEADER, csrfToken);
+  }
 
   return response;
 }

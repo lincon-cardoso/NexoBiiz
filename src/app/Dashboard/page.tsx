@@ -4,10 +4,13 @@ import { fetchWithAuth } from "@/lib/apiClient";
 
 interface DashboardData {
   user: Record<string, unknown>;
+  userName?: string;
 }
 
 interface UserData {
-  user: Record<string, unknown>;
+  user: {
+    name?: string; // Define explicitamente que 'name' é uma string opcional.
+  };
 }
 
 export default function DashboardPage() {
@@ -15,29 +18,58 @@ export default function DashboardPage() {
     null
   );
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch(
-        "https://nexobiiz.devlincon.com.br/api/dashboard"
-      );
-      const data: DashboardData = await response.json();
-      setDashboardData(data);
+      try {
+        console.time("fetchData");
+        const response = await fetch("/api/dashboard");
+        if (!response.ok) {
+          const text = await response.text();
+          setError(
+            `Erro no dashboard: ${response.status} ${response.statusText} - ${text}`
+          );
+          setDashboardData(null);
+          return;
+        }
+        const data: DashboardData = await response.json();
+        setDashboardData(data);
+        console.timeEnd("fetchData");
+      } catch (error) {
+        setError(`Erro ao buscar dados do dashboard: ${error}`);
+        setDashboardData(null);
+      }
+    }
+
+    async function loadUser() {
+      try {
+        console.time("loadUser");
+        const res = await fetchWithAuth("/api/me");
+        const text = await res.clone().text();
+        if (!res.ok) {
+          setError(
+            `Erro no usuário: ${res.status} ${res.statusText} - ${text}`
+          );
+          setUserData(null);
+          return;
+        }
+        const data: UserData = await res.json();
+        setUserData(data);
+        console.timeEnd("loadUser");
+      } catch (error) {
+        setError(`Erro ao carregar usuário: ${error}`);
+        setUserData(null);
+      }
     }
 
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    async function loadUser() {
-      const res = await fetchWithAuth("/api/me");
-      if (res.ok) {
-        const data: UserData = await res.json();
-        setUserData(data);
-      }
-    }
     loadUser();
   }, []);
+
+  if (error) {
+    return <div style={{ color: "red", whiteSpace: "pre-wrap" }}>{error}</div>;
+  }
 
   if (!dashboardData || !userData) {
     return <div>Loading...</div>;
@@ -46,8 +78,9 @@ export default function DashboardPage() {
   return (
     <div>
       <h1>Dashboard</h1>
-      <pre>{JSON.stringify(userData.user, null, 2)}</pre>
-      {/* Renderizar os dados do dashboard */}
+      <h2>
+        Welcome, {dashboardData.userName || userData.user.name || "Usuário"}!
+      </h2>
     </div>
   );
 }

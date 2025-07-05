@@ -21,9 +21,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   const login = async (email: string, password: string) => {
+    // 1. GET para obter o CSRF token atualizado
+    await fetch("/api/login", { method: "GET", credentials: "include" });
+
+    // 2. Ler o cookie csrf-token
+    const getCookie = (name: string) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(";").shift();
+    };
+    const csrfToken = getCookie("csrf-token");
+
+    // 3. POST com o header x-csrf-token e envio de cookies
     const res = await fetch("/api/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-csrf-token": csrfToken || "",
+      },
+      credentials: "include",
       body: JSON.stringify({ email, password }),
     });
     if (res.ok) {

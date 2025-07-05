@@ -75,13 +75,40 @@ export default function RegisterPage() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
+      // Refatoração: fluxo robusto para CSRF
+      // 1. GET para garantir o CSRF token atualizado
+      await fetch("/api/register", { method: "GET", credentials: "include" });
+
+      // 2. Aguarda o cookie csrf-token estar disponível (loop simples, máximo 10 tentativas)
+      function getCookie(name: string) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop()?.split(";").shift();
+      }
+      let csrfToken = getCookie("csrf-token");
+      let attempts = 0;
+      while (!csrfToken && attempts < 10) {
+        await new Promise((res) => setTimeout(res, 50));
+        csrfToken = getCookie("csrf-token");
+        attempts++;
+      }
+
+      if (!csrfToken) {
+        setErrorMessage(
+          "Não foi possível obter o token CSRF. Limpe os cookies e tente novamente."
+        );
+        return;
+      }
+
+      // 3. POST com o header x-csrf-token
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          "x-csrf-token": csrfToken,
         },
-        credentials: "same-origin",
+        credentials: "include",
         signal: controller.signal,
         body: JSON.stringify(parsedData),
       });
@@ -91,25 +118,39 @@ export default function RegisterPage() {
       if (response.ok) {
         // Registro bem-sucedido: faz login automático
         clearForm();
+        // Garante CSRF token atualizado antes do login
+        await fetch("/api/login", { method: "GET", credentials: "include" });
         await login(parsedData.email, parsedData.password);
       } else {
         const apiError = await response.json();
-        setErrorMessage(apiError.message || "Erro ao registrar usuário.");
-        console.error("Erro da API:", apiError.errors || apiError.message);
+        setErrorMessage(
+          `Erro: ${response.status} - ${
+            apiError.message || "Erro ao registrar usuário."
+          }${apiError.details ? `\nDetalhes: ${apiError.details}` : ""}`
+        );
+        console.error(
+          "Erro da API:",
+          apiError.errors || apiError.message,
+          apiError.details
+        );
 
         if (response.status === 500) {
           setErrorMessage(
-            "Erro interno no servidor. Por favor, tente novamente mais tarde."
+            `Erro interno no servidor (500). Por favor, tente novamente mais tarde.`
           );
         } else if (response.status === 400) {
-          setErrorMessage("Erro de validação: Verifique os dados enviados.");
+          setErrorMessage(
+            `Erro de validação (400): Verifique os dados enviados.`
+          );
         } else if (response.status === 0) {
           setErrorMessage(
-            "Erro de CORS: Verifique as configurações do servidor."
+            `Erro de CORS (0): Verifique as configurações do servidor.`
           );
         } else {
           setErrorMessage(
-            "Erro desconhecido: Por favor, entre em contato com o suporte."
+            `Erro desconhecido: Status ${response.status} - ${
+              apiError.message || "Sem mensagem da API"
+            }`
           );
         }
       }
