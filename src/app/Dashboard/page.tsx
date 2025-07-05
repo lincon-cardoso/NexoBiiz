@@ -27,8 +27,14 @@ export default function DashboardPage() {
       try {
         console.time("fetchData");
         const response = await fetch("/api/dashboard");
+        const text = await response.clone().text();
         if (!response.ok) {
-          const text = await response.text();
+          console.error(
+            "Erro no dashboard:",
+            response.status,
+            response.statusText,
+            text
+          );
           setError(
             `Erro no dashboard: ${response.status} ${response.statusText} - ${text}`
           );
@@ -39,6 +45,7 @@ export default function DashboardPage() {
         setDashboardData(data);
         console.timeEnd("fetchData");
       } catch (error) {
+        console.error("Erro ao buscar dados do dashboard:", error);
         setError(`Erro ao buscar dados do dashboard: ${error}`);
         setDashboardData(null);
       }
@@ -50,6 +57,7 @@ export default function DashboardPage() {
         const res = await fetchWithAuth("/api/me");
         const text = await res.clone().text();
         if (!res.ok) {
+          console.error("Erro no usuário:", res.status, res.statusText, text);
           setError(
             `Erro no usuário: ${res.status} ${res.statusText} - ${text}`
           );
@@ -60,6 +68,7 @@ export default function DashboardPage() {
         setUserData(data);
         console.timeEnd("loadUser");
       } catch (error) {
+        console.error("Erro ao carregar usuário:", error);
         setError(`Erro ao carregar usuário: ${error}`);
         setUserData(null);
       }
