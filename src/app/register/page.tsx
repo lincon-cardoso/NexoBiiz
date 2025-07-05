@@ -1,12 +1,11 @@
 "use client";
 import { useState } from "react";
 import { z } from "zod";
-import { useRouter } from "next/navigation"; // Substituir Router por useRouter
+import { useRouter } from "next/navigation";
 import styles from "@/style/register/register.module.scss";
 import Link from "next/link";
 import { validateCNPJ, formatCNPJ } from "@/lib/cnpjUtils";
 
-// Definir o esquema de validação com Zod
 const userSchema = z.object({
   name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres."),
   email: z.string().email("Email inválido."),
@@ -22,7 +21,7 @@ const userSchema = z.object({
 });
 
 export default function RegisterPage() {
-  const router = useRouter(); // Inicializar o roteador
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -33,14 +32,7 @@ export default function RegisterPage() {
   });
 
   const [errorMessage, setErrorMessage] = useState("");
-  const [errors, setErrors] = useState<{
-    name: string;
-    email: string;
-    password: string;
-    company: string;
-    cnpj: string;
-    phone: string;
-  }>({
+  const [errors, setErrors] = useState({
     name: "",
     email: "",
     password: "",
@@ -72,15 +64,18 @@ export default function RegisterPage() {
     e.preventDefault();
 
     try {
-      // Validar os dados no frontend
-      const parsedData = userSchema.parse(formData);
+      const parsedData = {
+        ...formData,
+        cnpj: formData.cnpj.replace(/\D/g, ""),
+      };
+      userSchema.parse(parsedData);
       console.log("Dados validados no frontend:", parsedData);
 
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Origin: window.location.origin, // Adiciona o cabeçalho Origin
+          Origin: window.location.origin,
         },
         body: JSON.stringify(parsedData),
       });
@@ -96,10 +91,19 @@ export default function RegisterPage() {
         setErrorMessage(error.message || "Erro ao registrar usuário.");
         console.error("Erro da API:", error.errors || error.message);
 
-        // Tratamento adicional para erros de CORS
-        if (response.status === 0) {
+        if (response.status === 500) {
+          setErrorMessage(
+            "Erro interno no servidor. Por favor, tente novamente mais tarde."
+          );
+        } else if (response.status === 400) {
+          setErrorMessage("Erro de validação: Verifique os dados enviados.");
+        } else if (response.status === 0) {
           setErrorMessage(
             "Erro de CORS: Verifique as configurações do servidor."
+          );
+        } else {
+          setErrorMessage(
+            "Erro desconhecido: Por favor, entre em contato com o suporte."
           );
         }
       }
@@ -237,7 +241,7 @@ export default function RegisterPage() {
                 errors.cnpj ? styles.error : ""
               }`}
               placeholder="Digite o CNPJ"
-              maxLength={18} // Limita o número de caracteres ao tamanho máximo do CNPJ formatado
+              maxLength={18}
             />
             {errors.cnpj && (
               <p className={styles.errorMessage}>{errors.cnpj}</p>
