@@ -43,4 +43,17 @@ export async function GET(request: Request) {
       { status: 401 }
     );
   }
+
+  if (process.env.NODE_ENV === "development") {
+    return NextResponse.json({
+      message: "Acesso livre no ambiente de desenvolvimento.",
+      data: {
+        totalUsers: 42,
+        totalCompanies: 7,
+        lastLogin: new Date().toISOString(),
+      },
+      userId: "dev-user",
+      userName: "Dev User",
+    });
+  }
 }

@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await res.json();
       localStorage.setItem("accessToken", data.accessToken);
       setAccessToken(data.accessToken);
-      router.push("/user-dashboard");
+      router.push("/dashboard");
     } else {
       let msg = "Login falhou";
       try {

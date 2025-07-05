@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Rotas protegidas (exemplo: dashboard)
-  const protectedRoutes = ["/user-dashboard"];
+  const protectedRoutes = ["/dashboard"];
   if (protectedRoutes.some((route) => pathname.startsWith(route))) {
     const accessToken = request.cookies.get("accessToken")?.value;
     if (!accessToken) {
@@ -29,22 +29,14 @@ export function middleware(request: NextRequest) {
       loginUrl.searchParams.set("from", pathname);
       return NextResponse.redirect(loginUrl);
     }
+    // Validação extra: se o token existe, mas é inválido/expirado, força logout
+    // Opcional: decodificar e validar JWT aqui se necessário
   }
 
   // Rate limiting global para rotas de API
-  // Exemplo: liberar o IP local do rate limit apenas em desenvolvimento
-  const myDevIp = "127.0.0.1";
   if (process.env.NODE_ENV !== "production" && pathname.startsWith("/api/")) {
-    let ip =
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
-      request.nextUrl.hostname ||
-      "unknown";
-    if (ip.includes(",")) ip = ip.split(",")[0].trim();
-    if (ip === myDevIp) {
-      // Libera o IP do rate limit
-      return NextResponse.next();
-    }
+    // Libera o rate limit em dev
+    return NextResponse.next();
   }
 
   if (pathname.startsWith("/api/")) {
@@ -180,6 +172,40 @@ export function middleware(request: NextRequest) {
       path: "/",
     });
     response.headers.set(CSRF_HEADER, csrfToken);
+  }
+
+  if (pathname === "/logout") {
+    const response = NextResponse.redirect("/login");
+    response.cookies.set("accessToken", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      expires: new Date(0),
+    });
+    response.cookies.set("refreshToken", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      expires: new Date(0),
+    });
+    return response;
+  }
+
+  let error;
+  try {
+    // ... lógica do middleware ...
+  } catch (err) {
+    error = err;
+  }
+
+  if (error) {
+    return NextResponse.json(
+      {
+        message: "Erro ao processar a solicitação.",
+        error: error.toString(),
+      },
+      { status: 500 }
+    );
   }
 
   return response;

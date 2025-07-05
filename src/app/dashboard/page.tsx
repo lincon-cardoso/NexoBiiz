@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { fetchWithAuth } from "@/lib/apiClient";
-import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface DashboardData {
   user: Record<string, unknown>;
@@ -20,17 +20,21 @@ export default function UserDashboardPage() {
   );
   const [userData, setUserData] = useState<UserData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { logout } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchData() {
       try {
         console.time("fetchData");
         const response = await fetch("/api/dashboard");
+        if (response.status === 401) {
+          router.replace("/login");
+          return;
+        }
         if (!response.ok) {
           const text = await response.text();
           setError(
-            `Erro no user-dashboard: ${response.status} ${response.statusText} - ${text}`
+            `Erro no dashboard: ${response.status} ${response.statusText} - ${text}`
           );
           setDashboardData(null);
           return;
@@ -69,7 +73,28 @@ export default function UserDashboardPage() {
 
     fetchData();
     loadUser();
-  }, []);
+  }, [router]);
+
+  const handleLogout = async () => {
+    try {
+      // Chama API para limpar cookies/tokens no backend
+      await fetch("/api/logout", { method: "POST", credentials: "include" });
+      // Limpa tokens do localStorage
+      localStorage.removeItem("accessToken");
+      // Limpa estados locais
+      setDashboardData(null);
+      setUserData(null);
+      setError(null);
+      // Força navegação e recarrega para garantir limpeza total
+      router.replace("/login");
+      if (typeof window !== "undefined") {
+        setTimeout(() => window.location.reload(), 100);
+      }
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+      setError("Erro ao fazer logout. Tente novamente.");
+    }
+  };
 
   if (error) {
     return <div style={{ color: "red", whiteSpace: "pre-wrap" }}>{error}</div>;
@@ -85,7 +110,7 @@ export default function UserDashboardPage() {
       <h2>
         Welcome, {dashboardData.userName || userData.user.name || "Usuário"}!
       </h2>
-      <button onClick={logout} style={{ marginTop: 16 }}>
+      <button onClick={handleLogout} style={{ marginTop: 16 }}>
         Logout
       </button>
     </div>
