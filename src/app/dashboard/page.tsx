@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { fetchWithAuth } from "@/lib/apiClient";
-import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface DashboardData {
   user: Record<string, unknown>;
@@ -73,7 +73,28 @@ export default function UserDashboardPage() {
 
     fetchData();
     loadUser();
-  }, []);
+  }, [router]);
+
+  const handleLogout = async () => {
+    try {
+      // Chama API para limpar cookies/tokens no backend
+      await fetch("/api/logout", { method: "POST", credentials: "include" });
+      // Limpa tokens do localStorage
+      localStorage.removeItem("accessToken");
+      // Limpa estados locais
+      setDashboardData(null);
+      setUserData(null);
+      setError(null);
+      // Força navegação e recarrega para garantir limpeza total
+      router.replace("/login");
+      if (typeof window !== "undefined") {
+        setTimeout(() => window.location.reload(), 100);
+      }
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+      setError("Erro ao fazer logout. Tente novamente.");
+    }
+  };
 
   if (error) {
     return (
