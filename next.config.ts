@@ -45,7 +45,16 @@ const nextConfig: NextConfig = {
           { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
           {
             key: "Content-Security-Policy",
-            value: "default-src 'self' https://static.cloudflareinsights.com;",
+            value: "default-src 'self' https://static.cloudflareinsights.com; " +
+                   "script-src 'self' https://static.cloudflareinsights.com " +
+                   "'sha256-bZP3iMM5Cko4Dq+aF6EkaXeCcf3hOL4hqb/6FETUDCg=' " +
+                   "'sha256-LcsuUMiDkprrt6ZKeiLP4iYNhWo8NqaSbAgtoZxVK3s=' " +
+                   "'sha256-OBTN3RiyCV4Bq7dFqZ5a2pAXjnCcCYeTJMO2I/LYKeo=' " +
+                   "'sha256-BnUO1cTGRJSLoOHjFT/xlPM4jHk2N900AVCGZDChfe8=' " +
+                   "'sha256-lpsso/ATFdqCbhjOT6RiFaRYtjiKFKJpnM1W3/8yBp8=' " +
+                   "'sha256-l+jHIJXHnxOxTurmIRe1AIXFS88HmAoYDCQuFyf07Kw=' " +
+                   "'sha256-TYibgXe4t0lwR6Cf+3zooXQPQox0ZlhSywk024wdd3Q='; " +
+                   "style-src 'self' 'unsafe-hashes' 'sha256-zlqnbDt84zf1iSefLU/ImC54isoprH/MRiVZGskwexk=';",
           },
           { key: "Access-Control-Allow-Origin", value: "*" },
         ],
