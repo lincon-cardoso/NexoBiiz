@@ -74,13 +74,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password: DOMPurify.sanitize(password),
       }),
     });
-    if (res.ok) {
-      const data = await res.json();
-      localStorage.setItem("accessToken", data.accessToken);
-      setAccessToken(data.accessToken);
-      router.push("/dashboard");
-    } else {
-      let msg = "Login falhou";
+
+    if (!res.ok) {
+      loginAttempts = 0; // Resetar tentativas em caso de erro
+      let msg = errorMessages.AUTHENTICATION_ERROR;
       try {
         await res.json();
         msg = errorMessages.AUTHENTICATION_ERROR;
