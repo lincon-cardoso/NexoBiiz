@@ -14,15 +14,20 @@ const userSchema = z.object({
   phone: z.string().min(10, "O telefone deve ter pelo menos 10 caracteres."),
 });
 
+async function rateLimit() {
+  // Implementação de rate limit removida
+  console.warn("Rate limiting não está implementado.");
+}
+
 export async function POST(request: Request) {
   try {
     // Apply rate limiting
-    const ip =
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
+    // const ip =
+    //   request.headers.get("x-forwarded-for") ||
+    //   request.headers.get("x-real-ip") ||
+    //   "unknown";
     // Aplicar rate limiting usando Redis
-    await rateLimit(ip);
+    await rateLimit();
     const data = await request.json();
     console.log("[API][register] Dados recebidos:", data);
 

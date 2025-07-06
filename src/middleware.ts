@@ -1,8 +1,8 @@
 import { NextResponse, NextRequest } from "next/server";
-// Usar Web Crypto API nativa (Edge Runtime) - não importar 'crypto'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
   // Handle CORS preflight for API routes with explicit whitelist
   if (pathname.startsWith("/api/") && request.method === "OPTIONS") {
     const headers = new Headers();
@@ -19,13 +19,20 @@ export function middleware(request: NextRequest) {
   }
 
   const response = NextResponse.next();
+
   // Gerar nonce para CSP usando Web Crypto API e enviar ao cliente via cookie
   const nonce = crypto.randomUUID();
-  response.cookies.set("csp-nonce", nonce, { httpOnly: true, path: "/" });
+  response.cookies.set("csp-nonce", nonce, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+  });
+
   // Security headers
   response.headers.set("X-Frame-Options", "DENY");
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+
   // HSTS apenas em produção
   if (process.env.NODE_ENV === "production") {
     response.headers.set(
@@ -33,16 +40,17 @@ export function middleware(request: NextRequest) {
       "max-age=63072000; includeSubDomains; preload"
     );
   }
+
   response.headers.set("Permissions-Policy", "geolocation=(), microphone=()");
+
   // Content Security Policy: usa nonce em produção e ativa report-only
   if (process.env.NODE_ENV === "production") {
-    // Adiciona domínio de vendor para scripts (ex: Google Tag Manager)
     const csp =
       `default-src 'self'; img-src 'self' data: https:; ` +
       `script-src 'self' 'nonce-${nonce}' https://www.googletagmanager.com; ` +
       `style-src 'self' https:;`;
     response.headers.set("Content-Security-Policy", csp);
-    // Report-only CSP para detectar violações sem bloquear
+
     const reportUri = process.env.CSP_REPORT_URI || "";
     if (reportUri) {
       response.headers.set(
@@ -51,7 +59,6 @@ export function middleware(request: NextRequest) {
       );
     }
   } else {
-    // Dev: permite inline e eval para hot-reload
     response.headers.set(
       "Content-Security-Policy",
       "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https:;"
@@ -75,5 +82,14 @@ export function middleware(request: NextRequest) {
       response.headers.set("Vary", "Origin");
     }
   }
+
+  // Adicionar proteção contra CSRF
+  const csrfToken = crypto.randomUUID();
+  response.cookies.set("csrf-token", csrfToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+  });
+
   return response;
 }

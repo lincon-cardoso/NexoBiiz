@@ -1,19 +1,22 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
+import { errorMessages } from "@/constants/errorMessages";
 
 interface JwtPayload {
   userId: number;
 }
 
 export async function GET(request: Request) {
-  // Pega o cookie accessToken
   const cookieHeader = request.headers.get("cookie") || "";
   const match = cookieHeader.match(/accessToken=([^;]+)/);
   const token = match ? match[1] : null;
 
   if (!token) {
-    return NextResponse.json({ message: "Não autenticado." }, { status: 401 });
+    return NextResponse.json(
+      { message: errorMessages.AUTHENTICATION_ERROR },
+      { status: 401 }
+    );
   }
 
   try {
@@ -21,11 +24,17 @@ export async function GET(request: Request) {
       token,
       process.env.JWT_ACCESS_SECRET!
     ) as JwtPayload;
-    // Buscar nome do usuário no banco
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
     });
-    // Exemplo de dados fictícios para o dashboard
+
+    if (!user) {
+      return NextResponse.json(
+        { message: errorMessages.USER_LOAD_ERROR },
+        { status: 404 }
+      );
+    }
+
     const dashboardData = {
       message: "Dashboard carregado com sucesso!",
       data: {
@@ -34,17 +43,20 @@ export async function GET(request: Request) {
         lastLogin: new Date().toISOString(),
       },
       userId: decoded.userId,
-      userName: user?.name || null,
+      userName: user.name,
     };
+
     return NextResponse.json(dashboardData);
-  } catch {
+  } catch (error) {
+    console.error("Erro ao validar token:", error);
     return NextResponse.json(
-      { message: "Token inválido ou expirado." },
+      { message: errorMessages.INVALID_CREDENTIALS },
       { status: 401 }
     );
   }
 
   if (process.env.NODE_ENV === "development") {
+    console.warn("Acesso livre no ambiente de desenvolvimento.");
     return NextResponse.json({
       message: "Acesso livre no ambiente de desenvolvimento.",
       data: {
