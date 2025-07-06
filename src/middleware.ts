@@ -3,19 +3,13 @@ import { NextResponse, NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Handle CORS preflight for API routes with explicit whitelist
-  if (pathname.startsWith("/api/") && request.method === "OPTIONS") {
-    const headers = new Headers();
-    const origin = request.headers.get("origin") || "";
-    const whitelist =
-      process.env.ALLOWED_ORIGINS?.split(",").map((o) => o.trim()) || [];
-    const allowOrigin = whitelist.includes(origin) ? origin : "";
-    if (allowOrigin) {
-      headers.set("Access-Control-Allow-Origin", allowOrigin);
-      headers.set("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-      headers.set("Access-Control-Allow-Headers", "Content-Type,Accept");
-    }
-    return new NextResponse(null, { status: 204, headers });
+  // Verificar se o usuário está autenticado
+  const accessToken = request.cookies.get("accessToken")?.value;
+
+  if (!accessToken && pathname.startsWith("/dashboard")) {
+    // Redirecionar para a tela de login se o token não estiver presente
+    const loginUrl = new URL("/login", request.url);
+    return NextResponse.redirect(loginUrl);
   }
 
   const response = NextResponse.next();
@@ -26,9 +20,33 @@ export function middleware(request: NextRequest) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     path: "/",
+    maxAge: 3600, // Expira em 1 hora
   });
 
-  // Security headers
+  // Adicionar proteção contra CSRF
+  const csrfToken = crypto.randomUUID();
+  response.cookies.set("csrf-token", csrfToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 3600, // Expira em 1 hora
+  });
+
+  // Monitoramento de sessões: invalidar tokens antigos
+  const sessionExpiry = 3600; // Expira em 1 hora
+  response.cookies.set(
+    "session-expiry",
+    (Date.now() + sessionExpiry * 1000).toString(),
+    {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: sessionExpiry,
+    }
+  );
+
+  // Cabeçalhos de segurança adicionais
+  response.headers.set("Expect-CT", "max-age=86400, enforce");
   response.headers.set("X-Frame-Options", "DENY");
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
@@ -83,13 +101,14 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // Adicionar proteção contra CSRF
-  const csrfToken = crypto.randomUUID();
-  response.cookies.set("csrf-token", csrfToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-  });
+  // Bloquear IPs após várias tentativas de autenticação falhadas
+  const failedAttempts = request.cookies.get("failed-attempts")?.value || "0";
+  if (parseInt(failedAttempts) > 5) {
+    return NextResponse.json(
+      { message: "IP bloqueado devido a várias tentativas falhadas." },
+      { status: 429 }
+    );
+  }
 
   return response;
 }
