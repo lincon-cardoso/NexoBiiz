@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import { errorMessages } from "@/constants/errorMessages";
 
 export async function POST() {
-  const res = NextResponse.json({ message: "Logout realizado com sucesso" });
+  const res = NextResponse.json({ message: errorMessages.LOGOUT_ERROR });
   // Remove accessToken e refreshToken em qualquer ambiente
   res.cookies.set("accessToken", "", {
     httpOnly: true,

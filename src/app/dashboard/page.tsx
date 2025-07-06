@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchWithAuth } from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
+import { errorMessages } from "@/constants/errorMessages";
 
 interface DashboardData {
   user: Record<string, unknown>;
@@ -96,8 +97,20 @@ export default function UserDashboardPage() {
     }
   };
 
+  if (error === errorMessages.AUTHENTICATION_ERROR) {
+    return (
+      <div className="errorMessage">
+        <p>{errorMessages.LOGIN_FAILED}</p>
+      </div>
+    );
+  }
+
   if (error) {
-    return <div style={{ color: "red", whiteSpace: "pre-wrap" }}>{error}</div>;
+    return (
+      <div className="errorMessage">
+        <p>{error}</p>
+      </div>
+    );
   }
 
   if (!dashboardData || !userData) {

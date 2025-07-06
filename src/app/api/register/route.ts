@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import argon2 from "argon2";
+import { errorMessages } from "@/constants/errorMessages";
 
 // Definir o esquema de validação com Zod (sem o campo username)
 const userSchema = z.object({
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
       const conflictField =
         existingUser.email === parsedData.email ? "Email" : "CNPJ";
       return NextResponse.json(
-        { message: `${conflictField} já está registrado.` },
+        { message: `${conflictField} ${errorMessages.AUTHENTICATION_ERROR}` },
         { status: 409 }
       );
     }
@@ -77,7 +78,7 @@ export async function POST(request: Request) {
       console.error("Erro do Prisma ao criar usuário:", prismaError);
       return NextResponse.json(
         {
-          message: "Erro ao criar usuário no banco de dados.",
+          message: errorMessages.USER_LOAD_ERROR,
           details: String(prismaError),
         },
         { status: 500 }
@@ -95,7 +96,7 @@ export async function POST(request: Request) {
 
     console.error("Erro ao registrar usuário:", error);
     return NextResponse.json(
-      { message: "Erro ao registrar usuário." },
+      { message: errorMessages.LOGIN_FAILED },
       { status: 500 }
     );
   }
