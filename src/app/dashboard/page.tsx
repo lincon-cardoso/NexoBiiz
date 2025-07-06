@@ -109,6 +109,7 @@ export default function UserDashboardPage() {
       <h1>User Dashboard</h1>
       <h2>
         Welcome, {dashboardData.userName || userData.user.name || "Usuário"}!
+        Bem vindo ao seu painel de controle.
       </h2>
       <button onClick={handleLogout} style={{ marginTop: 16 }}>
         Logout
