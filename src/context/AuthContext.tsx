@@ -80,6 +80,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       console.log("[AuthContext] Iniciando logout...");
+      console.log(
+        "[AuthContext] Todos os cookies antes do logout:",
+        document.cookie
+      );
       function getCookie(name: string) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -101,14 +105,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           "Não foi possível obter o token CSRF. Limpe os cookies e tente novamente."
         );
       }
+      // Envia o token no corpo da requisição
       const response = await fetch("/api/logout", {
         method: "POST",
         headers: {
-          "x-csrf-token": csrfToken,
+          "Content-Type": "application/json",
         },
         credentials: "include",
+        body: JSON.stringify({ csrfToken }),
       });
-      console.log("[AuthContext] CSRF token enviado no header:", csrfToken);
       console.log("[AuthContext] Resposta da API logout:", response);
       if (!response.ok) {
         const error = await response.json();

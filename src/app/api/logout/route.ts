@@ -1,12 +1,25 @@
+// Força execução em Node.js para permitir headers customizados
+export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import { errorMessages } from "@/constants/errorMessages";
 
-function validateCSRF(request: Request) {
-  const csrfToken = request.headers.get("x-csrf-token");
-  const cookieHeader = request.headers.get("cookie") || "";
+// Validação CSRF lendo o token do corpo da requisição (body já lido no handler)
+function validateCSRF(csrfToken: string | undefined, cookieHeader: string) {
   const match = cookieHeader.match(/csrf-token=([^;]+)/);
   const validToken = match ? match[1] : undefined;
+
+  console.log("[API][logout] Header cookie recebido:", cookieHeader);
+  console.log("[API][logout] CSRF token recebido no body:", csrfToken);
+  console.log(
+    "[API][logout] Valor do csrf-token extraído do cookie:",
+    validToken
+  );
+
   if (!csrfToken || csrfToken !== validToken) {
+    console.warn("[API][logout] Falha na validação CSRF", {
+      csrfToken,
+      validToken,
+    });
     return NextResponse.json(
       {
         error: errorMessages.INVALID_INPUT,
@@ -19,7 +32,22 @@ function validateCSRF(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const csrfError = validateCSRF(request);
+  // Loga todos os headers recebidos para depuração
+  console.log(
+    "[API][logout] Todos os headers recebidos:",
+    Object.fromEntries(request.headers.entries())
+  );
+
+  const cookieHeader = request.headers.get("cookie") || "";
+  let csrfToken: string | undefined = undefined;
+  try {
+    const body = await request.json();
+    csrfToken = body?.csrfToken;
+  } catch {
+    // Se não for JSON, ignora
+  }
+
+  const csrfError = validateCSRF(csrfToken, cookieHeader);
   if (csrfError) return csrfError;
 
   try {
