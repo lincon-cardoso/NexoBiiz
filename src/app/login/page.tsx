@@ -13,29 +13,20 @@ export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
 
-  const resetStates = () => {
-    setEmail("");
-    setPassword("");
-    setError("");
-    setSuccess("");
-  };
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {
+      console.log("Enviando dados de login:", { email, password });
       await login(email, password);
+      setSuccess("Login realizado com sucesso!");
       router.push("/dashboard"); // Redireciona para o dashboard
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Erro ao fazer login";
+      console.error("Erro ao fazer login:", message);
       setError(message);
     }
-  };
-
-  const handleLogout = () => {
-    resetStates();
-    router.push("/"); // Redireciona para a página inicial
   };
 
   const handleInputChange =
@@ -81,13 +72,6 @@ export default function LoginPage() {
             <div className={styles.buttonContainer}>
               <button type="submit" className={styles.submitButton}>
                 Entrar
-              </button>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className={styles.logoutButton}
-              >
-                Sair
               </button>
             </div>
           </form>

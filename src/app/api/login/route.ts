@@ -1,95 +1,101 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import argon2 from "argon2";
-import { z } from "zod";
 import jwt from "jsonwebtoken";
-import { rateLimit } from "@/lib/rateLimit";
-import { redis } from "@/lib/redisClient";
+import { errorMessages } from "@/constants/errorMessages";
 
-// prisma singleton import acima replaces new PrismaClient()
+function generateCSRFToken() {
+  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+}
 
-const loginSchema = z.object({
-  email: z.string().email("Email inválido."),
-  password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres."),
-});
+function validateCSRF(request: Request) {
+  const csrfToken = request.headers.get("x-csrf-token");
+  const cookieHeader = request.headers.get("cookie") || "";
+  const match = cookieHeader.match(/csrf-token=([^;]+)/);
+  const validToken = match ? match[1] : undefined;
+  // Removendo logs de depuração
+  if (!csrfToken || csrfToken !== validToken) {
+    return NextResponse.json(
+      {
+        error: errorMessages.INVALID_INPUT,
+        detail: "CSRF token ausente ou inválido.",
+      },
+      { status: 403 }
+    );
+  }
+  return null;
+}
+
+export async function GET(request: Request) {
+  // Só gera o token CSRF se não existir
+  const cookieHeader = request.headers.get("cookie") || "";
+  const match = cookieHeader.match(/csrf-token=([^;]+)/);
+  const existingToken = match ? match[1] : undefined;
+  if (existingToken) {
+    return new NextResponse(null, { status: 204 });
+  }
+  const csrfToken = generateCSRFToken();
+  const response = new NextResponse(null, { status: 204 });
+  response.cookies.set("csrf-token", csrfToken, {
+    httpOnly: false, // Permite leitura no JS
+    sameSite: "lax", // Mais permissivo para SPA
+    path: "/",
+    maxAge: 60 * 60,
+  });
+  return response;
+}
 
 export async function POST(request: Request) {
+  const csrfError = validateCSRF(request);
+  if (csrfError) return csrfError;
+
   try {
-    // Rate limit per IP
-    const ip =
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
-    await rateLimit(`login:${ip}`);
+    const { email, password } = await request.json();
 
-    const data = await request.json();
-    const { email, password } = loginSchema.parse(data);
-
-    // Verificar usuário e comparar senha (dummy hash para timing attacks)
     const user = await prisma.user.findUnique({ where: { email } });
-    const storedHash = user
-      ? user.password
-      : await argon2.hash("invalid-password");
-    const isValid = await argon2.verify(storedHash, password);
-    if (!isValid || !user) {
+    if (!user || !(await argon2.verify(user.password, password))) {
       return NextResponse.json(
         { message: "Credenciais inválidas" },
         { status: 401 }
       );
     }
 
-    // Limpar contador de rate limit em Redis após sucesso
-    const userIp =
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
-      "unknown";
-    await redis.del(`login:${userIp}`);
-
-    // Autenticação bem-sucedida: gerar tokens
     const accessToken = jwt.sign(
       { userId: user.id },
       process.env.JWT_ACCESS_SECRET!,
-      { expiresIn: "15m" }
+      {
+        expiresIn: "15m",
+      }
     );
     const refreshToken = jwt.sign(
       { userId: user.id },
       process.env.JWT_REFRESH_SECRET!,
-      { expiresIn: "7d" }
+      {
+        expiresIn: "7d",
+      }
     );
-    // Enviar accessToken e refreshToken em cookies HttpOnly
-    const res = NextResponse.json({ user: { id: user.id } }, { status: 200 });
-    res.cookies.set("accessToken", accessToken, {
+
+    const response = NextResponse.json({ message: "Login bem-sucedido" });
+    response.cookies.set("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
-      maxAge: 60 * 15, // 15 minutos
+      maxAge: 60 * 15,
     });
-    res.cookies.set("refreshToken", refreshToken, {
+    response.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
-      maxAge: 7 * 24 * 60 * 60, // 7 dias
+      maxAge: 7 * 24 * 60 * 60,
     });
-    return res;
+
+    return response;
   } catch (error) {
-    // Tratamento de rate limit do Redis
-    if (error instanceof Error && error.message === "RATE_LIMITED") {
-      return NextResponse.json(
-        { message: "Muitas tentativas. Tente novamente mais tarde." },
-        { status: 429 }
-      );
-    }
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { message: "Dados inválidos.", errors: error.errors },
-        { status: 400 }
-      );
-    }
     console.error("Erro no login:", error);
     return NextResponse.json(
-      { message: "Erro interno no servidor." },
+      { message: "Erro interno no servidor" },
       { status: 500 }
     );
   }

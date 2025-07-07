@@ -1,22 +1,38 @@
 import { NextResponse } from "next/server";
 import { errorMessages } from "@/constants/errorMessages";
 
-export async function POST() {
-  const res = NextResponse.json({ message: errorMessages.LOGOUT_ERROR });
-  // Remove accessToken e refreshToken em qualquer ambiente
-  res.cookies.set("accessToken", "", {
-    httpOnly: true,
-    path: "/",
-    maxAge: 0,
-    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-    secure: false, // Garante remoção em localhost
-  });
-  res.cookies.set("refreshToken", "", {
-    httpOnly: true,
-    path: "/",
-    maxAge: 0,
-    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-    secure: false,
-  });
-  return res;
+function validateCSRF(request: Request) {
+  const csrfToken = request.headers.get("x-csrf-token");
+  const cookieHeader = request.headers.get("cookie") || "";
+  const match = cookieHeader.match(/csrf-token=([^;]+)/);
+  const validToken = match ? match[1] : undefined;
+  if (!csrfToken || csrfToken !== validToken) {
+    return NextResponse.json(
+      {
+        error: errorMessages.INVALID_INPUT,
+        detail: "CSRF token ausente ou inválido.",
+      },
+      { status: 403 }
+    );
+  }
+  return null;
+}
+
+export async function POST(request: Request) {
+  const csrfError = validateCSRF(request);
+  if (csrfError) return csrfError;
+
+  try {
+    const response = NextResponse.json({ message: "Logout bem-sucedido" });
+    response.cookies.delete("accessToken");
+    response.cookies.delete("refreshToken");
+
+    return response;
+  } catch (error) {
+    console.error("Erro no logout:", error);
+    return NextResponse.json(
+      { message: "Erro interno no servidor" },
+      { status: 500 }
+    );
+  }
 }

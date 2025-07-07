@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
-import "@/style/global.scss";
 import { AuthProvider } from "@/context/AuthContext";
+import "@/style/global.scss";
 
 export const metadata: Metadata = {
   title: "Nexobiiz - Transformando Ideias em Soluções",
@@ -16,12 +15,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookiesStore = await cookies();
-  const nonce = cookiesStore.get("csp-nonce")?.value;
-
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body>{children}</body>
+      <body>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
