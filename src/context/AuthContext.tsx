@@ -29,7 +29,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      console.log("[AuthContext] Iniciando login...");
       // Só chama GET /api/login se não houver cookie CSRF
       function getCookie(name: string) {
         const value = `; ${document.cookie}`;
@@ -60,16 +59,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ email, password }),
         credentials: "include",
       });
-      console.log("[AuthContext] Resposta da API:", response);
       if (!response.ok) {
         const error = await response.json();
         console.error("[AuthContext] Erro no login:", error);
         throw new Error(error.message || "Erro ao realizar login.");
       }
       setIsAuthenticated(true);
-      console.log(
-        "[AuthContext] Login bem-sucedido. Redirecionando para /dashboard..."
-      );
       router.push("/dashboard");
     } catch (error) {
       console.error("[AuthContext] Erro inesperado no login:", error);
@@ -79,11 +74,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      console.log("[AuthContext] Iniciando logout...");
-      console.log(
-        "[AuthContext] Todos os cookies antes do logout:",
-        document.cookie
-      );
       function getCookie(name: string) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -96,10 +86,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         csrfToken = getCookie("csrf-token");
         attempts++;
       }
-      console.log(
-        "[AuthContext] CSRF token do cookie antes do logout:",
-        csrfToken
-      );
       if (!csrfToken) {
         throw new Error(
           "Não foi possível obter o token CSRF. Limpe os cookies e tente novamente."
@@ -114,16 +100,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         credentials: "include",
         body: JSON.stringify({ csrfToken }),
       });
-      console.log("[AuthContext] Resposta da API logout:", response);
       if (!response.ok) {
         const error = await response.json();
         console.error("[AuthContext] Erro no logout:", error);
         throw new Error(error.message || "Erro ao realizar logout.");
       }
       setIsAuthenticated(false);
-      console.log(
-        "[AuthContext] Logout bem-sucedido. Redirecionando para /login..."
-      );
       router.push("/login");
     } catch (error) {
       console.error("[AuthContext] Erro inesperado no logout:", error);

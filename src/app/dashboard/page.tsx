@@ -7,7 +7,7 @@ const DashboardPage = () => {
   return (
     <div>
       <h1>Dashboard</h1>
-      <p>Bem-vindo ao painel de controle Bem vindo !</p>
+      <p>Bem-vindo ao painel de controle Bem vindo gfawear !</p>
       <button onClick={logout} style={{ marginTop: 16 }}>
         Sair
       </button>

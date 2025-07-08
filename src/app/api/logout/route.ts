@@ -32,12 +32,6 @@ function validateCSRF(csrfToken: string | undefined, cookieHeader: string) {
 }
 
 export async function POST(request: Request) {
-  // Loga todos os headers recebidos para depuração
-  console.log(
-    "[API][logout] Todos os headers recebidos:",
-    Object.fromEntries(request.headers.entries())
-  );
-
   const cookieHeader = request.headers.get("cookie") || "";
   let csrfToken: string | undefined = undefined;
   try {

@@ -17,7 +17,6 @@ export default function LoginPage() {
     event.preventDefault();
 
     try {
-      console.log("Enviando dados de login:", { email, password });
       await login(email, password);
       setSuccess("Login realizado com sucesso!");
       router.push("/dashboard"); // Redireciona para o dashboard

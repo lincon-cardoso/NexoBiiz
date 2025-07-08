@@ -69,7 +69,6 @@ export default function RegisterPage() {
         cnpj: formData.cnpj.replace(/\D/g, ""),
       };
       userSchema.parse(parsedData);
-      console.log("Dados validados no frontend:", parsedData);
 
       // Inicia controle de timeout para a requisição
       const controller = new AbortController();
@@ -127,7 +126,6 @@ export default function RegisterPage() {
             apiError.message || "Erro ao registrar usuário."
           }${apiError.details ? `\nDetalhes: ${apiError.details}` : ""}`
         );
-        console.error(apiError);
       }
     } catch (error: unknown) {
       if (error instanceof z.ZodError) {
@@ -149,8 +147,7 @@ export default function RegisterPage() {
       } else if (error instanceof TypeError) {
         setErrorMessage("Erro de conexão com o servidor.");
       } else {
-        console.error("Erro inesperado:", error);
-        setErrorMessage("Erro ao registrar usuário.");
+        setErrorMessage("Erro inesperado. Tente novamente mais tarde.");
       }
     }
   };

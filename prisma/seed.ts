@@ -7,7 +7,7 @@ async function main() {
   });
 
   if (!existingUser) {
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         name: "John Doe",
         email: "john.doe@nexobiiz.devlincon.com.br",
@@ -17,20 +17,16 @@ async function main() {
         phone: "1234567890",
       },
     });
-    console.log(user);
-  } else {
-    console.log("Usuário já existe:", existingUser);
   }
 }
 
 async function seedScriptEvents() {
-  const event = await prisma.scriptEvents.create({
+  await prisma.scriptEvents.create({
     data: {
       scriptName: "init.js",
       eventType: "EXECUTION",
     },
   });
-  console.log(event);
 }
 
 main()
