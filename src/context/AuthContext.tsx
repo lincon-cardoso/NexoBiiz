@@ -8,8 +8,17 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  company: string;
+  cnpj: string;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
+  user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -20,6 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Evita problemas de hidratação: só renderiza após o client estar pronto
   const [isMounted, setIsMounted] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   // Garante que o componente só renderize no client
@@ -29,7 +39,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      // Só chama GET /api/login se não houver cookie CSRF
       function getCookie(name: string) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
@@ -59,12 +68,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ email, password }),
         credentials: "include",
       });
+      const data = await response.json();
       if (!response.ok) {
-        const error = await response.json();
-        console.error("[AuthContext] Erro no login:", error);
-        throw new Error(error.message || "Erro ao realizar login.");
+        console.error("[AuthContext] Erro no login:", data);
+        throw new Error(data.message || "Erro ao realizar login.");
       }
       setIsAuthenticated(true);
+      setUser(data.user);
       router.push("/dashboard");
     } catch (error) {
       console.error("[AuthContext] Erro inesperado no login:", error);
@@ -116,7 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   if (!isMounted) return null;
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

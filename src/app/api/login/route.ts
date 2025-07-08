@@ -75,7 +75,16 @@ export async function POST(request: Request) {
       }
     );
 
-    const response = NextResponse.json({ message: "Login bem-sucedido" });
+    const response = NextResponse.json({
+      message: "Login bem-sucedido",
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        company: user.company,
+        cnpj: user.cnpj,
+      },
+    });
     response.cookies.set("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
