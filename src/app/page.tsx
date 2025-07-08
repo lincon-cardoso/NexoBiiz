@@ -7,7 +7,7 @@ export default function Home() {
     <>
       <Header />
       <MainContent />
-      {/* Teste */}
+      Teste
       <Footer />
     </>
   );
