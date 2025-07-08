@@ -7,7 +7,7 @@ import {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-// teste
+
 interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
