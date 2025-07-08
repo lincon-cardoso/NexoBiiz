@@ -22,7 +22,7 @@ export default function TutorialPage() {
                 <p className={styles.stepDescription}>
                   <span className={styles.span}>1. Cadastro de Produtos: </span>{" "}
                   Adicione os produtos que você vende, com nome, preço e
-                  quantidade.
+                  quantidade. e selecione a categoria
                 </p>
                 <p className={styles.stepDescription}>
                   <span className={styles.span}>2. Registro de Vendas:</span>{" "}
