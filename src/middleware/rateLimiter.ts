@@ -1,13 +1,22 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import DOMPurify from "dompurify";
+import Joi from "joi";
 
 const attemptTracker: Record<
   string,
-  { attempts: number; lastAttempt: number }
+  { attempts: number; lastAttempt: number; blockedUntil?: number }
 > = {};
 const MAX_ATTEMPTS = 5;
 const WINDOW_MS = 15 * 60 * 1000; // 15 minutos
+const BLOCK_DURATION_MS = 30 * 60 * 1000; // 30 minutos
 
-export const loginRateLimiter = (
+const transactionSchema = Joi.object({
+  tipo: Joi.string().valid("ganho", "custo").required(),
+  descricao: Joi.string().max(255).required(),
+  valor: Joi.number().positive().required(),
+});
+
+export const enhancedRateLimiter = (
   req: NextApiRequest | Request,
   res: NextApiResponse,
   next: () => void
@@ -17,13 +26,11 @@ export const loginRateLimiter = (
       ? req.headers.get("x-forwarded-for") ||
         req.headers.get("remote-address") ||
         ""
-      : (
-          req.headers["x-forwarded-for"] ||
-          req.socket?.remoteAddress ||
-          ""
-        ).toString();
+      : req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "";
 
-  const sanitizedIp = ip.split(",")[0]?.trim();
+  const sanitizedIp = Array.isArray(ip)
+    ? ip[0]?.trim()
+    : ip.split(",")[0]?.trim();
 
   if (!sanitizedIp) {
     return res
@@ -37,13 +44,21 @@ export const loginRateLimiter = (
     lastAttempt: 0,
   };
 
+  if (tracker.blockedUntil && now < tracker.blockedUntil) {
+    return res.status(429).json({
+      error:
+        "IP bloqueado temporariamente devido a muitas tentativas. Tente novamente mais tarde.",
+    });
+  }
+
   if (
     tracker.attempts >= MAX_ATTEMPTS &&
     now - tracker.lastAttempt < WINDOW_MS
   ) {
+    tracker.blockedUntil = now + BLOCK_DURATION_MS;
+    attemptTracker[sanitizedIp] = tracker;
     return res.status(429).json({
-      error:
-        "Muitas tentativas de login. Por favor, tente novamente mais tarde.",
+      error: "Muitas tentativas de requisição. IP bloqueado temporariamente.",
     });
   }
 
@@ -55,56 +70,20 @@ export const loginRateLimiter = (
   tracker.lastAttempt = now;
   attemptTracker[sanitizedIp] = tracker;
 
-  next();
-};
-
-export const transactionRateLimiter = (
-  req: NextApiRequest | Request,
-  res: NextApiResponse,
-  next: () => void
-) => {
-  const ip =
-    req instanceof Request
-      ? req.headers.get("x-forwarded-for") ||
-        req.headers.get("remote-address") ||
-        ""
-      : (
-          req.headers["x-forwarded-for"] ||
-          req.socket?.remoteAddress ||
-          ""
-        ).toString();
-
-  const sanitizedIp = ip.split(",")[0]?.trim();
-
-  if (!sanitizedIp) {
-    return res
-      .status(500)
-      .json({ error: "Não foi possível identificar o IP." });
+  // Validação de entrada
+  if (req.method === "POST") {
+    try {
+      const body = req.body;
+      const sanitizedBody = DOMPurify.sanitize(JSON.stringify(body));
+      const parsedBody = JSON.parse(sanitizedBody);
+      const { error } = transactionSchema.validate(parsedBody);
+      if (error) {
+        return res.status(400).json({ error: "Dados inválidos." });
+      }
+    } catch {
+      return res.status(400).json({ error: "Erro ao processar entrada." });
+    }
   }
-
-  const now = Date.now();
-  const tracker = attemptTracker[sanitizedIp] || {
-    attempts: 0,
-    lastAttempt: 0,
-  };
-
-  if (
-    tracker.attempts >= MAX_ATTEMPTS &&
-    now - tracker.lastAttempt < WINDOW_MS
-  ) {
-    return res.status(429).json({
-      error:
-        "Muitas tentativas de acesso. Por favor, tente novamente mais tarde.",
-    });
-  }
-
-  if (now - tracker.lastAttempt > WINDOW_MS) {
-    tracker.attempts = 0;
-  }
-
-  tracker.attempts++;
-  tracker.lastAttempt = now;
-  attemptTracker[sanitizedIp] = tracker;
 
   next();
 };

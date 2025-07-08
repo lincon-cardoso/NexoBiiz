@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
-import { transactionRateLimiter } from "@/middleware/rateLimiter";
+import { enhancedRateLimiter } from "@/middleware/rateLimiter";
 import dotenv from "dotenv";
 import CryptoJS from "crypto-js";
 import { csrfValidator } from "@/middleware/csrfValidator";
@@ -29,7 +29,7 @@ async function getUserId(request: Request): Promise<number | null> {
 }
 
 export async function GET(request: Request) {
-  transactionRateLimiter(
+  enhancedRateLimiter(
     request as unknown as NextApiRequest,
     {} as NextApiResponse,
     () => {}
@@ -49,7 +49,7 @@ export async function GET(request: Request) {
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json({ transactions });
   } catch (error) {
     console.error("Erro ao buscar transações:", error);
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
     );
   }
 
-  transactionRateLimiter(
+  enhancedRateLimiter(
     request as unknown as NextApiRequest,
     {} as NextApiResponse,
     () => {}
