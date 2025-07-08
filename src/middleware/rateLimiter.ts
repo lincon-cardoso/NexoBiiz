@@ -18,7 +18,7 @@ const transactionSchema = Joi.object({
 
 export const enhancedRateLimiter = (
   req: NextApiRequest | Request,
-  res: NextApiResponse,
+  res: NextApiResponse | undefined,
   next: () => void
 ) => {
   const ip =
@@ -33,9 +33,12 @@ export const enhancedRateLimiter = (
     : ip.split(",")[0]?.trim();
 
   if (!sanitizedIp) {
-    return res
-      .status(500)
-      .json({ error: "Não foi possível identificar o IP." });
+    if (res) {
+      return res
+        .status(500)
+        .json({ error: "Não foi possível identificar o IP." });
+    }
+    throw new Error("Não foi possível identificar o IP.");
   }
 
   const now = Date.now();
@@ -45,10 +48,15 @@ export const enhancedRateLimiter = (
   };
 
   if (tracker.blockedUntil && now < tracker.blockedUntil) {
-    return res.status(429).json({
-      error:
-        "IP bloqueado temporariamente devido a muitas tentativas. Tente novamente mais tarde.",
-    });
+    if (res) {
+      return res.status(429).json({
+        error:
+          "IP bloqueado temporariamente devido a muitas tentativas. Tente novamente mais tarde.",
+      });
+    }
+    throw new Error(
+      "IP bloqueado temporariamente devido a muitas tentativas. Tente novamente mais tarde."
+    );
   }
 
   if (
@@ -57,9 +65,14 @@ export const enhancedRateLimiter = (
   ) {
     tracker.blockedUntil = now + BLOCK_DURATION_MS;
     attemptTracker[sanitizedIp] = tracker;
-    return res.status(429).json({
-      error: "Muitas tentativas de requisição. IP bloqueado temporariamente.",
-    });
+    if (res) {
+      return res.status(429).json({
+        error: "Muitas tentativas de requisição. IP bloqueado temporariamente.",
+      });
+    }
+    throw new Error(
+      "Muitas tentativas de requisição. IP bloqueado temporariamente."
+    );
   }
 
   if (now - tracker.lastAttempt > WINDOW_MS) {
@@ -78,10 +91,16 @@ export const enhancedRateLimiter = (
       const parsedBody = JSON.parse(sanitizedBody);
       const { error } = transactionSchema.validate(parsedBody);
       if (error) {
-        return res.status(400).json({ error: "Dados inválidos." });
+        if (res) {
+          return res.status(400).json({ error: "Dados inválidos." });
+        }
+        throw new Error("Dados inválidos.");
       }
     } catch {
-      return res.status(400).json({ error: "Erro ao processar entrada." });
+      if (res) {
+        return res.status(400).json({ error: "Erro ao processar entrada." });
+      }
+      throw new Error("Erro ao processar entrada.");
     }
   }
 

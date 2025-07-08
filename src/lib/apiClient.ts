@@ -25,6 +25,12 @@ export function encryptData(data: Record<string, unknown>): string {
 }
 
 export function decryptData(encryptedData: string): Record<string, unknown> {
-  const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
-  return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  try {    
+    const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
+    const decrypted = bytes.toString(CryptoJS.enc.Utf8);    
+    return JSON.parse(decrypted);
+  } catch (error) {
+    console.error("Erro ao descriptografar dados:", error);
+    throw new Error("Falha na descriptografia dos dados.");
+  }
 }

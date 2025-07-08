@@ -28,8 +28,7 @@ export async function POST(request: Request) {
     //   "unknown";
     // Aplicar rate limiting usando Redis
     await rateLimit();
-    const data = await request.json();
-    console.log("[API][register] Dados recebidos:", data);
+    const data = await request.json();    
 
     // Validar os dados no backend
     const parsedData = userSchema.parse(data);

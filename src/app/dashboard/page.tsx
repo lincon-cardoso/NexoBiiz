@@ -39,13 +39,11 @@ const DashboardPage = () => {
       try {
         const res = await fetchWithAuth("/api/transactions");
         if (res.ok) {
-          const data = await res.json();
-          console.log("Dados recebidos da API:", data);
+          const data = await res.json();          
           const decryptedTransactions = data.transactions
             .map((t: EncryptedTransaction) => {
               try {
-                const decryptedValue = decryptData(t.valor);
-                console.log("Valor descriptografado:", decryptedValue);
+                const decryptedValue = decryptData(t.valor);                
                 return {
                   id: Number(t.id),
                   tipo: t.tipo,

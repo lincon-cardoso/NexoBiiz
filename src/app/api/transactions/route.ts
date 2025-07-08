@@ -1,11 +1,8 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { NextApiRequest, NextApiResponse } from "next";
-import { enhancedRateLimiter } from "@/middleware/rateLimiter";
 import dotenv from "dotenv";
 import CryptoJS from "crypto-js";
-import { csrfValidator } from "@/middleware/csrfValidator";
 
 dotenv.config();
 // Carrega e sanitiza a chave de criptografia do arquivo .env, removendo possíveis aspas e espaços
@@ -29,30 +26,29 @@ async function getUserId(request: Request): Promise<number | null> {
 }
 
 export async function GET(request: Request) {
-  enhancedRateLimiter(
-    request as unknown as NextApiRequest,
-    {} as NextApiResponse,
-    () => {}
-  );
-  const userId = await getUserId(request);
-  if (!userId) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
   try {
+    const userId = await getUserId(request);
+    if (!userId) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
     const transactions = await prisma.transaction.findMany({
       where: { userId },
       orderBy: { createdAt: "desc" },
     });
-    if (!transactions || transactions.length === 0) {
-      return NextResponse.json(
-        { message: "Nenhuma transação encontrada." },
-        { status: 404 }
-      );
-    }
 
-    return NextResponse.json({ transactions });
-  } catch (error) {
-    console.error("Erro ao buscar transações:", error);
+    const encryptedTransactions = transactions.map((transaction) => {
+      const encryptedValue = CryptoJS.AES.encrypt(
+        transaction.valor.toString(),
+        SECRET_KEY
+      ).toString();
+      return {
+        ...transaction,
+        valor: encryptedValue,
+      };
+    });
+
+    return NextResponse.json({ transactions: encryptedTransactions });
+  } catch {
     return NextResponse.json(
       { message: "Erro ao buscar transações" },
       { status: 500 }
@@ -61,87 +57,45 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  if (!SECRET_KEY) {
-    console.error(
-      "SECRET_KEY não está definida. Certifique-se de que o arquivo .env está configurado corretamente e sendo carregado."
-    );
-    return NextResponse.json(
-      { message: "Erro interno: chave de criptografia não configurada." },
-      { status: 500 }
-    );
-  }
-
-  enhancedRateLimiter(
-    request as unknown as NextApiRequest,
-    {} as NextApiResponse,
-    () => {}
-  );
-
-  csrfValidator(request as unknown as NextRequest);
-
-  console.log("Iniciando validação de usuário...");
-  const userId = await getUserId(request);
-  console.log("ID do usuário:", userId);
-
-  if (!userId) {
-    console.error("Usuário não autorizado.");
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-
   try {
-    console.log("Recebendo dados da requisição...");
-    const payload = await request.json();
-    const encryptedStr = typeof payload === "string" ? payload : payload.data;
-    console.log("Dados criptografados recebidos:", encryptedStr);
-
-    console.log("SECRET_KEY utilizada para descriptografia:", SECRET_KEY);
-
-    try {
-      console.log("Descriptografando dados...");
-      const decryptedString = CryptoJS.AES.decrypt(
-        encryptedStr,
-        SECRET_KEY
-      ).toString(CryptoJS.enc.Utf8);
-      console.log("Dados descriptografados como string:", decryptedString);
-
-      if (!decryptedString) {
-        console.error(
-          "Erro: Dados descriptografados estão vazios ou inválidos."
-        );
-        return NextResponse.json(
-          { message: "Dados descriptografados estão vazios ou inválidos." },
-          { status: 400 }
-        );
-      }
-
-      const decryptedData = JSON.parse(decryptedString);
-      console.log("Dados descriptografados como JSON:", decryptedData);
-
-      const { tipo, descricao, valor } = decryptedData;
-      if (!tipo || !descricao || !valor || isNaN(Number(valor))) {
-        console.error("Dados inválidos:", decryptedData);
-        return NextResponse.json(
-          { message: "Dados inválidos" },
-          { status: 400 }
-        );
-      }
-
-      console.log("Criando transação no banco de dados...");
-      const transaction = await prisma.transaction.create({
-        data: { tipo, descricao, valor, userId },
-      });
-      console.log("Transação criada com sucesso:", transaction);
-
-      return NextResponse.json({ transaction }, { status: 201 });
-    } catch (error) {
-      console.error("Erro ao criar transação:", error);
+    if (!SECRET_KEY) {
       return NextResponse.json(
-        { message: "Erro ao criar transação" },
+        { message: "Erro interno: chave de criptografia não configurada." },
         { status: 500 }
       );
     }
-  } catch (error) {
-    console.error("Erro ao processar requisição:", error);
+
+    const userId = await getUserId(request);
+    if (!userId) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const payload = await request.json();
+    const encryptedStr = typeof payload === "string" ? payload : payload.data;
+    const decryptedString = CryptoJS.AES.decrypt(
+      encryptedStr,
+      SECRET_KEY
+    ).toString(CryptoJS.enc.Utf8);
+
+    if (!decryptedString) {
+      return NextResponse.json(
+        { message: "Dados descriptografados estão vazios ou inválidos." },
+        { status: 400 }
+      );
+    }
+
+    const decryptedData = JSON.parse(decryptedString);
+    const { tipo, descricao, valor } = decryptedData;
+    if (!tipo || !descricao || !valor || isNaN(Number(valor))) {
+      return NextResponse.json({ message: "Dados inválidos" }, { status: 400 });
+    }
+
+    const transaction = await prisma.transaction.create({
+      data: { tipo, descricao, valor, userId },
+    });
+
+    return NextResponse.json({ transaction }, { status: 201 });
+  } catch {
     return NextResponse.json(
       { message: "Erro ao processar requisição" },
       { status: 500 }
