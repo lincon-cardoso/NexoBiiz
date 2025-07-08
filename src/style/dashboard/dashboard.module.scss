@@ -1,4 +1,4 @@
-.dashboard-financeiro {
+.dashboardFinanceiro {
   max-width: 600px;
   margin: 40px auto;
   background: #fff;
@@ -19,7 +19,7 @@
       color: #2d3748;
     }
 
-    .empresa-info {
+    .empresaInfo {
       text-align: right;
       font-size: 1rem;
       color: #4a5568;
@@ -36,7 +36,7 @@
     color: #2b6cb0;
   }
 
-  .botoes-filtro {
+  .botoesFiltro {
     display: flex;
     gap: 10px;
     margin-bottom: 18px;
@@ -97,7 +97,7 @@
     }
   }
 
-  .adicionar-transacao {
+  .adicionarTransacao {
     margin-bottom: 32px;
 
     h3 {
@@ -140,7 +140,7 @@
     }
   }
 
-  .lista-transacoes {
+  .listaTransacoes {
     margin-bottom: 32px;
 
     h3 {
@@ -183,7 +183,7 @@
     }
   }
 
-  .logout-btn {
+  .logoutBtn {
     background: #e53e3e;
     color: #fff;
     border: none;
@@ -199,7 +199,7 @@
     }
   }
 
-  .teste-classe {
+  .testeClasse {
     background-color: #ffcccb !important;
     color: #333 !important;
     padding: 10px;

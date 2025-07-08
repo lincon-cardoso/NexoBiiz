@@ -1,7 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import styles from "@/style/dashboard/dashboard.module.scss";
+import { formatCNPJ } from "@/lib/cnpjUtils";
+import { fetchWithAuth, encryptData, decryptData } from "@/lib/apiClient";
 
 type TransactionType = "ganho" | "custo";
 
@@ -10,6 +12,13 @@ interface Transaction {
   tipo: TransactionType;
   descricao: string;
   valor: number;
+}
+
+interface EncryptedTransaction {
+  id: string;
+  tipo: TransactionType;
+  descricao: string;
+  valor: string;
 }
 
 const DashboardPage = () => {
@@ -24,6 +33,28 @@ const DashboardPage = () => {
     "resultado"
   );
 
+  // Carrega transações do banco de dados
+  useEffect(() => {
+    async function loadTransactions() {
+      try {
+        const res = await fetchWithAuth("/api/transactions");
+        if (res.ok) {
+          const data = await res.json();
+          const decryptedTransactions = data.transactions.map(
+            (t: EncryptedTransaction) => ({
+              id: Number(t.id),
+              tipo: t.tipo,
+              descricao: t.descricao,
+              valor: Number(t.valor),
+            })
+          );
+          setTransactions(decryptedTransactions);
+        }
+      } catch {}
+    }
+    loadTransactions();
+  }, []);
+
   // Cálculos
   const ganhos = transactions
     .filter((t) => t.tipo === "ganho")
@@ -34,19 +65,37 @@ const DashboardPage = () => {
   const saldo = ganhos - custos;
 
   // Adicionar transação
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!descricao || valor === "" || isNaN(Number(valor))) return;
-    setTransactions([
-      ...transactions,
-      {
-        id: Date.now(),
+    try {
+      const encryptedBody = encryptData({
         tipo,
         descricao,
         valor: Number(valor),
-      },
-    ]);
-    setDescricao("");
-    setValor("");
+      });
+      const res = await fetchWithAuth("/api/transactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: encryptedBody }),
+      });
+      if (res.ok) {
+        const { transaction } = await res.json();
+        const decryptedTransaction = decryptData(
+          transaction
+        ) as unknown as EncryptedTransaction;
+        setTransactions([
+          {
+            id: Number(decryptedTransaction.id),
+            tipo: decryptedTransaction.tipo,
+            descricao: decryptedTransaction.descricao,
+            valor: Number(decryptedTransaction.valor),
+          },
+          ...transactions,
+        ]);
+        setDescricao("");
+        setValor("");
+      }
+    } catch {}
   };
 
   // Filtragem para exibição
@@ -65,7 +114,7 @@ const DashboardPage = () => {
               <strong>Empresa:</strong> {user.company}
             </div>
             <div>
-              <strong>CNPJ:</strong> {user.cnpj}
+              <strong>CNPJ:</strong> {formatCNPJ(user.cnpj)}
             </div>
           </div>
         )}
@@ -144,8 +193,6 @@ const DashboardPage = () => {
       <button onClick={logout} className={styles.logoutBtn}>
         Sair
       </button>
-
-
     </div>
   );
 };

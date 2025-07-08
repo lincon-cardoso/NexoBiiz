@@ -1,3 +1,10 @@
+import CryptoJS from "crypto-js";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const SECRET_KEY = process.env.SECRET_KEY || ""; // Certifique-se de definir SECRET_KEY no arquivo .env
+
 // Helper para requisições autenticadas com acesso via JWT e refresh token
 // Salva accessToken no localStorage e renova quando expira via /api/refresh
 
@@ -13,4 +20,13 @@ export async function fetchWithAuth(
     ...init,
     credentials: "include",
   });
+}
+
+export function encryptData(data: Record<string, unknown>): string {
+  return CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
+}
+
+export function decryptData(encryptedData: string): Record<string, unknown> {
+  const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
+  return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 }
