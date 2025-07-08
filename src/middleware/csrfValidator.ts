@@ -1,23 +1,21 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 
-// Middleware para validar CSRF token
-export const csrfValidator = (
-  req: NextApiRequest | Request,
-  res: NextApiResponse,
-  next: () => void
-) => {
-  const csrfToken =
-    req.headers instanceof Headers
-      ? req.headers.get("x-csrf-token")
-      : req.headers["x-csrf-token"];
+export function csrfValidator(req: NextRequest) {
+  const csrfTokenFromCookie = req.cookies.get("csrfToken")?.value;
+  const csrfTokenFromHeader = req.headers.get("x-csrf-token");
 
-  const validToken = "cookies" in req ? req.cookies?.["csrf-token"] : undefined;
+  console.log("CSRF Token from Cookie:", csrfTokenFromCookie);
+  console.log("CSRF Token from Header:", csrfTokenFromHeader);
 
-  if (!csrfToken || csrfToken !== validToken) {
-    return res
-      .status(403)
-      .json({ error: "Requisição inválida. CSRF token ausente ou inválido." });
+  if (
+    !csrfTokenFromCookie ||
+    !csrfTokenFromHeader ||
+    csrfTokenFromCookie !== csrfTokenFromHeader
+  ) {
+    console.error("CSRF validation failed.");
+    return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
   }
 
-  next();
-};
+  console.log("CSRF validation passed.");
+  return NextResponse.next();
+}

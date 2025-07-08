@@ -2,53 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
-import { errorMessages } from "@/constants/errorMessages";
-
-function generateCSRFToken() {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
-}
-
-function validateCSRF(request: Request) {
-  const csrfToken = request.headers.get("x-csrf-token");
-  const cookieHeader = request.headers.get("cookie") || "";
-  const match = cookieHeader.match(/csrf-token=([^;]+)/);
-  const validToken = match ? match[1] : undefined;
-  // Removendo logs de depuração
-  if (!csrfToken || csrfToken !== validToken) {
-    return NextResponse.json(
-      {
-        error: errorMessages.INVALID_INPUT,
-        detail: "CSRF token ausente ou inválido.",
-      },
-      { status: 403 }
-    );
-  }
-  return null;
-}
-
-export async function GET(request: Request) {
-  // Só gera o token CSRF se não existir
-  const cookieHeader = request.headers.get("cookie") || "";
-  const match = cookieHeader.match(/csrf-token=([^;]+)/);
-  const existingToken = match ? match[1] : undefined;
-  if (existingToken) {
-    return new NextResponse(null, { status: 204 });
-  }
-  const csrfToken = generateCSRFToken();
-  const response = new NextResponse(null, { status: 204 });
-  response.cookies.set("csrf-token", csrfToken, {
-    httpOnly: false, // Permite leitura no JS
-    sameSite: "lax", // Mais permissivo para SPA
-    path: "/",
-    maxAge: 60 * 60,
-  });
-  return response;
-}
 
 export async function POST(request: Request) {
-  const csrfError = validateCSRF(request);
-  if (csrfError) return csrfError;
-
   try {
     const { email, password } = await request.json();
 

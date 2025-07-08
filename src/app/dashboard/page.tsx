@@ -40,17 +40,38 @@ const DashboardPage = () => {
         const res = await fetchWithAuth("/api/transactions");
         if (res.ok) {
           const data = await res.json();
-          const decryptedTransactions = data.transactions.map(
-            (t: EncryptedTransaction) => ({
-              id: Number(t.id),
-              tipo: t.tipo,
-              descricao: t.descricao,
-              valor: Number(t.valor),
+          console.log("Dados recebidos da API:", data);
+          const decryptedTransactions = data.transactions
+            .map((t: EncryptedTransaction) => {
+              try {
+                const decryptedValue = decryptData(t.valor);
+                console.log("Valor descriptografado:", decryptedValue);
+                return {
+                  id: Number(t.id),
+                  tipo: t.tipo,
+                  descricao: t.descricao,
+                  valor: Number(decryptedValue),
+                };
+              } catch (error) {
+                console.error(
+                  "Erro ao descriptografar valor da transação:",
+                  error
+                );
+                return null;
+              }
             })
-          );
+            .filter(Boolean);
           setTransactions(decryptedTransactions);
+        } else {
+          console.error(
+            "Erro na resposta do servidor:",
+            res.status,
+            res.statusText
+          );
         }
-      } catch {}
+      } catch (error) {
+        console.error("Erro ao carregar transações:", error);
+      }
     }
     loadTransactions();
   }, []);
@@ -80,20 +101,20 @@ const DashboardPage = () => {
       });
       if (res.ok) {
         const { transaction } = await res.json();
-        const decryptedTransaction = decryptData(
-          transaction
-        ) as unknown as EncryptedTransaction;
-        setTransactions([
-          {
-            id: Number(decryptedTransaction.id),
-            tipo: decryptedTransaction.tipo,
-            descricao: decryptedTransaction.descricao,
-            valor: Number(decryptedTransaction.valor),
-          },
-          ...transactions,
+        const decryptedTransaction = {
+          id: Number(transaction.id),
+          tipo: transaction.tipo,
+          descricao: transaction.descricao,
+          valor: Number(transaction.valor),
+        };
+        setTransactions((prevTransactions) => [
+          decryptedTransaction,
+          ...prevTransactions,
         ]);
         setDescricao("");
         setValor("");
+      } else {
+        console.error("Erro ao adicionar transação:", res.statusText);
       }
     } catch {}
   };

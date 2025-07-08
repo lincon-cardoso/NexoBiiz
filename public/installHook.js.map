@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "file": "installHook.js",
+  "sources": [
+    "installHook.ts"
+  ],
+  "sourcesContent": [
+    "// Código fonte do arquivo installHook.ts"
+  ],
+  "mappings": "AAAA;AACA;AACA"
+}

@@ -22,7 +22,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
-// teste
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -39,31 +39,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      function getCookie(name: string) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop()?.split(";").shift();
-      }
-      let csrfToken = getCookie("csrf-token");
-      let attempts = 0;
-      if (!csrfToken) {
-        await fetch("/api/login", { method: "GET", credentials: "include" });
-        while (!csrfToken && attempts < 10) {
-          await new Promise((res) => setTimeout(res, 50));
-          csrfToken = getCookie("csrf-token");
-          attempts++;
-        }
-      }
-      if (!csrfToken) {
-        throw new Error(
-          "Não foi possível obter o token CSRF. Limpe os cookies e tente novamente."
-        );
-      }
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-csrf-token": csrfToken,
         },
         body: JSON.stringify({ email, password }),
         credentials: "include",
@@ -84,23 +63,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      function getCookie(name: string) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop()?.split(";").shift();
-      }
-      let csrfToken = getCookie("csrf-token");
-      let attempts = 0;
-      while (!csrfToken && attempts < 10) {
-        await new Promise((res) => setTimeout(res, 50));
-        csrfToken = getCookie("csrf-token");
-        attempts++;
-      }
-      if (!csrfToken) {
-        throw new Error(
-          "Não foi possível obter o token CSRF. Limpe os cookies e tente novamente."
-        );
-      }
       // Envia o token no corpo da requisição
       const response = await fetch("/api/logout", {
         method: "POST",
@@ -108,7 +70,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ csrfToken }),
       });
       if (!response.ok) {
         const error = await response.json();

@@ -1,9 +1,7 @@
 import CryptoJS from "crypto-js";
-import dotenv from "dotenv";
 
-dotenv.config();
-
-const SECRET_KEY = process.env.SECRET_KEY || ""; // Certifique-se de definir SECRET_KEY no arquivo .env
+// Usa a chave pública exposta para o cliente; defina NEXT_PUBLIC_SECRET_KEY no .env
+const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY || "";
 
 // Helper para requisições autenticadas com acesso via JWT e refresh token
 // Salva accessToken no localStorage e renova quando expira via /api/refresh

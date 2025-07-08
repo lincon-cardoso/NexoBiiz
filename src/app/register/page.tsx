@@ -74,37 +74,11 @@ export default function RegisterPage() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-      // Refatoração: fluxo robusto para CSRF
-      // 1. GET para garantir o CSRF token atualizado
-      await fetch("/api/register", { method: "GET", credentials: "include" });
-
-      // 2. Aguarda o cookie csrf-token estar disponível (loop simples, máximo 10 tentativas)
-      function getCookie(name: string) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop()?.split(";").shift();
-      }
-      let csrfToken = getCookie("csrf-token");
-      let attempts = 0;
-      while (!csrfToken && attempts < 10) {
-        await new Promise((res) => setTimeout(res, 50));
-        csrfToken = getCookie("csrf-token");
-        attempts++;
-      }
-
-      if (!csrfToken) {
-        setErrorMessage(
-          "Não foi possível obter o token CSRF. Limpe os cookies e tente novamente."
-        );
-        return;
-      }
-
       const response = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "x-csrf-token": csrfToken,
         },
         credentials: "include",
         signal: controller.signal,
@@ -116,8 +90,6 @@ export default function RegisterPage() {
       if (response.ok) {
         // Registro bem-sucedido: faz login automático
         clearForm();
-        // Garante CSRF token atualizado antes do login
-        await fetch("/api/login", { method: "GET", credentials: "include" });
         await login(parsedData.email, parsedData.password);
       } else {
         const apiError = await response.json();
