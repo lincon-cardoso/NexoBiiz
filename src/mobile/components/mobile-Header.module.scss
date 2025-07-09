@@ -1,14 +1,14 @@
 @mixin headerMobileStyles {
     .headerNav {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
         text-align: center;
         justify-content: center;
         width: 100%;
         max-width: 100%; // Garante que a largura máxima seja 100% da tela
         margin: 0 auto; // Centraliza horizontalmente
-        gap: 0.7rem;
+        gap: 1.5rem;
         padding: 1rem;
 
         .headerLogo {

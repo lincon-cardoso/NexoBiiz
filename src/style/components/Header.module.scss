@@ -94,9 +94,13 @@
         
     }
 
-    @media (max-width: 480px) {
-        // @include mobile.headerMobileStyles;
-
+    @media (max-width: 658px) {
+        @include mobile.headerMobileStyles;
+        .headerNav{
+            flex-direction: column; // Muda a direção para coluna em telas menores
+            align-items: center; // Centraliza os itens
+            gap: 1rem; // Ajusta o espaçamento entre os itens
+        }
         
     }
 }
