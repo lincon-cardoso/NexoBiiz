@@ -94,7 +94,7 @@
         
     }
 
-    @media (max-width: 658px) {
+    @media (max-width: 680px) {
         @include mobile.headerMobileStyles;
         .headerNav{
             flex-direction: column; // Muda a direção para coluna em telas menores
