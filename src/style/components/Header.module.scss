@@ -1,3 +1,5 @@
+@use '../../mobile/components/mobile-Header.module' as mobile;
+
 .header {
     background: linear-gradient(90deg, #6B21A8FF 0%, #312E81FF 100%);
     border-radius: 0px 0px 0px 0px;
@@ -7,7 +9,7 @@
     .headerNav {
         display: flex;
         align-items: center;
-        justify-content: space-between;        
+        justify-content: space-between;
         max-width: 1200px; // Define um tamanho máximo para a div
         margin: 0 auto; // Centraliza horizontalmente
         padding: 0.5rem 1rem; // Adiciona espaçamento nas laterais
@@ -39,7 +41,7 @@
         .headerNavLinks {
             display: flex;
             align-items: center;
-            gap: 2rem; 
+            gap: 2rem;
             font-size: 14px;
             line-height: 20px;
             font-weight: 600;
@@ -57,14 +59,14 @@
             }
         }
 
-        .headerAuthButtons{            
+        .headerAuthButtons {
             display: flex;
             align-items: center;
             gap: 1rem;
-            
+
             .headerLoginButton,
             .headerRegisterButton {
-                padding: 0.5rem 1rem;                
+                padding: 0.5rem 1rem;
                 border-radius: 15px;
                 font-size: 14px;
                 font-weight: 600;
@@ -77,7 +79,7 @@
                 }
 
                 &.headerRegisterButton {
-                    background-color: #6B21A8; 
+                    background-color: #6B21A8;
                 }
 
                 &:hover {
@@ -85,5 +87,16 @@
                 }
             }
         }
+    }
+
+    @media (max-width: 900px) {
+        @include mobile.headerMobileStyles;
+        
+    }
+
+    @media (max-width: 480px) {
+        // @include mobile.headerMobileStyles;
+
+        
     }
 }

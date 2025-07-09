@@ -5,24 +5,38 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  productionBrowserSourceMaps: true, // Habilita mapas de origem no ambiente de produção
+  productionBrowserSourceMaps: true,
 
   experimental: {
-    optimizeCss: true, // Ativa otimização de CSS
+    optimizeCss: true,
   },
 
   async headers() {
+    const isDev = process.env.NODE_ENV === "development";
+
     return [
-      // 🔹 Cabeçalhos de segurança + sem cache para páginas (SSR e HTML)
+      // 🔹 HEADERS GERAIS PARA TODAS AS PÁGINAS
       {
         source: "/:path*",
         headers: [
-          {
-            key: "Cache-Control",
-            value: "no-store, no-cache, must-revalidate, proxy-revalidate",
-          },
-          { key: "Pragma", value: "no-cache" },
-          { key: "Expires", value: "0" },
+          ...(isDev
+            ? [
+                {
+                  key: "Cache-Control",
+                  value:
+                    "no-store, no-cache, must-revalidate, proxy-revalidate",
+                },
+                { key: "Pragma", value: "no-cache" },
+                { key: "Expires", value: "0" },
+              ]
+            : [
+                {
+                  key: "Cache-Control",
+                  value: "public, max-age=31536000, immutable",
+                },
+              ]),
+
+          // 🔒 Cabeçalhos de segurança
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "X-Frame-Options", value: "DENY" },
@@ -43,7 +57,7 @@ const nextConfig: NextConfig = {
         ],
       },
 
-      // 🔹 Cache agressivo para arquivos estáticos com hash
+      // 🔹 ARQUIVOS ESTÁTICOS DO NEXT
       {
         source: "/_next/static/:path*",
         headers: [
@@ -54,7 +68,7 @@ const nextConfig: NextConfig = {
         ],
       },
 
-      // 🔹 Cache agressivo para imagens otimizadas
+      // 🔹 IMAGENS OTIMIZADAS
       {
         source: "/_next/image",
         headers: [

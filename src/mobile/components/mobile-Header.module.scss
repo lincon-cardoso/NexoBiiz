@@ -1,0 +1,72 @@
+@mixin headerMobileStyles {
+    .headerNav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 100%; // Garante que a largura máxima seja 100% da tela
+        margin: 0 auto; // Centraliza horizontalmente
+        gap: 0.7rem;
+        padding: 1rem;
+
+        .headerLogo {
+            display: flex;
+            flex-direction: row; // Define a direção horizontal para posicionar o texto ao lado direito da imagem
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            gap: 30px; // Aumenta o espaço entre os itens (imagem e texto)
+            padding: 1rem; // Adiciona mais espaço interno na área da div
+
+            .headerLogoImage {
+                width: 80px;
+                height: 50px;
+                margin-right: 10px; // Adiciona espaço à direita da imagem
+                vertical-align: middle; // Garante alinhamento vertical
+            }
+
+            .headerLogoText {
+                display: inline-block;
+                vertical-align: middle; // Garante alinhamento vertical
+                font-size: 1.5rem;
+                line-height: normal; // Ajusta o espaçamento para alinhamento
+                margin-left: 10px; // Adiciona espaço à esquerda do texto
+            }
+        }
+
+        .headerNavLinks {
+            display: flex;
+            flex-direction: column; // Altera a direção para coluna
+            gap: 0.5rem; // Espaçamento entre os links
+            padding: 1rem;
+
+            a {
+                text-decoration: none;
+                color: #FFFFFF; // Texto branco para contraste
+                font-size: 1rem;
+                padding: 0.5rem;
+                border-radius: 5px;
+                transition: background-color 0.3s ease;
+
+            }
+        }
+
+        .headerAuthButtons {
+            display: flex;
+            flex-direction: row; // Botões lado a lado
+            gap: 1rem; // Espaçamento entre os botões
+
+            button {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+
+            }
+        }
+    }
+}
