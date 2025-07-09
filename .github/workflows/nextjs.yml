@@ -1,27 +1,39 @@
-name: Deploy Next.js site to Railway
+name: Deploy Next.js → Railway
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
   workflow_dispatch:
+
+concurrency:
+  group: deploy-nextjs
+  cancel-in-progress: true
 
 permissions:
   contents: read
   id-token: write
 
+env:
+  ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN2 }}
+  RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v3
+
       - name: Purge Cloudflare cache
         run: |
           curl -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache" \
             -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
             -H "Content-Type: application/json" \
             --data '{"purge_everything":true}'
-        env:
-          ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Trigger Railway deploy
         run: |
@@ -29,6 +41,3 @@ jobs:
             -H "Authorization: Bearer $RAILWAY_API_TOKEN" \
             -H "Content-Type: application/json" \
             --data '{"query":"mutation { deploy(input: { projectId: \"$RAILWAY_PROJECT_ID\" }) { id }}"}'
-        env:
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN2 }}
-          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
