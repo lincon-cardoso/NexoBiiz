@@ -72,29 +72,6 @@
     }
 
     @media (max-width: 420px) {
-
-        .footer {
-            padding: 20px;
-
-            .footerContent {
-                padding: 10px;
-
-                .navLinks {
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 10px;
-
-                    .navList {
-                        flex-direction: column;
-                        align-items: center;
-                        gap: 10px;
-
-                        .navItem {
-                            font-size: 14px;
-                        }
-                    }
-                }
-            }
-        }
+        @include mobile.footerMobileStyles;
     }
 }
