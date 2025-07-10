@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
     optimizeCss: true,
   },
 
+  onDemandEntries: {
+    maxInactiveAge: process.env.NODE_ENV === "development" ? 0 : 15000, // Desabilita cache em desenvolvimento, ativa em produção
+  },
+
   async headers() {
     const isDev = process.env.NODE_ENV === "development";
 

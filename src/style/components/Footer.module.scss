@@ -1,3 +1,5 @@
+@use '../../mobile/components/mobile-Footer.module' as mobile;
+
 .footer {
     background: linear-gradient(90deg, #581C87FF 0%, #1E1B4BFF 100%);
     box-shadow: 0px 0px 1px #171a1f12, 0px 0px 2px #171a1f1F;
@@ -6,7 +8,7 @@
     flex-direction: column;
     align-items: center;
     padding: 40px 0;
-    
+
     .footerContent {
         padding: 20px;
         width: 100%;
@@ -42,7 +44,6 @@
     }
 
     .footerBottom {
-        
         .socialIcons {
             gap: 30px;
             margin: 0 auto;
@@ -67,6 +68,33 @@
             font-weight: 400;
             color: #9CA3AFFF;
             margin-bottom: 30px;
+        }
+    }
+
+    @media (max-width: 420px) {
+
+        .footer {
+            padding: 20px;
+
+            .footerContent {
+                padding: 10px;
+
+                .navLinks {
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 10px;
+
+                    .navList {
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 10px;
+
+                        .navItem {
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
         }
     }
 }
