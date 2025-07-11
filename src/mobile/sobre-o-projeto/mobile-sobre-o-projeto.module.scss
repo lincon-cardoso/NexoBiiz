@@ -1,0 +1,31 @@
+@mixin sobreOProjetoMobileStyles {
+    .mainContent {
+        gap: 30px;
+        padding: 20px; // Adiciona padding lateral para telas menores
+
+        .section {
+            width: 100%; // Ocupa a largura total disponível
+            padding: 15px;
+            gap: 15px;
+
+            .title,
+            .subtitle {
+                font-size: 24px; // Reduz o tamanho da fonte para títulos
+            }
+
+            .description {
+                font-size: 16px; // Reduz o tamanho da fonte para descrições
+            }
+
+            .list {
+                gap: 10px;
+                align-items: center; // Alinha itens à esquerda para melhor leitura
+
+                .listItem {
+                    font-size: 16px;
+                    text-align: left; // Alinha o texto à esquerda
+                }
+            }
+        }
+    }
+}

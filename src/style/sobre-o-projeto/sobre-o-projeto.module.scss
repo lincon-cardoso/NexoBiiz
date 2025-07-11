@@ -1,4 +1,12 @@
+@use '../../mobile/sobre-o-projeto/mobile-sobre-o-projeto.module' as mobile;
+
 .sobreOProjetoPage {
+    // Variáveis de cor para o componente
+    $primary-color: #4B79FF;
+    $text-color: rgba(0, 0, 0, 0.8);
+    $section-bg-color: #f9f9f9;
+    $shadow-color: rgba(0, 0, 0, 0.1);
+
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -9,60 +17,63 @@
         flex-direction: column;
         align-items: center;
         gap: 50px;
+        padding: 20px 0;
 
         .section {
-            gap: 20px;
             width: 1075px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: $section-bg-color;
+            box-shadow: 0 2px 4px $shadow-color;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
-            margin: 10px;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            gap: 20px;
 
             .title,
             .subtitle {
-                width: 220px;
-                text-align: center;
-                font-family: Archivo;
+                font-family: Archivo, sans-serif;
                 font-size: 30px;
-                line-height: 45px;
                 font-weight: 700;
-                color: rgba(75, 121, 255, 1);
+                line-height: 1.5;
+                color: $primary-color;
+                text-align: center;
             }
 
             .description {
                 width: 100%;
-                text-align: center;
-                font-family: Archivo;
+                font-family: Archivo, sans-serif;
                 font-size: 18px;
-                line-height: 27px;
                 font-weight: 400;
-                color: rgba(0, 0, 0, 0.8);
+                line-height: 1.5;
+                color: $text-color;
+                text-align: center;
             }
 
-            .list{
-                // border: 2px solid red;
+            .list {
                 width: 100%;
-                height: auto;
+                list-style: none;
+                padding: 0;
+                margin: 0;
                 display: flex;
-                padding: 20px;
                 flex-direction: column;
                 align-items: center;
-                justify-content: center;
-                gap: 20px;
+                gap: 15px;
 
-                .listItem{                    
+                .listItem {
                     font-size: 18px;
-                    line-height: 24px;
+                    line-height: 1.5;
                     font-weight: 400;
+                    text-align: center;
+                    color: $text-color; // Cor do texto aplicada para consistência
                 }
             }
-
-
         }
+    }
+}
+
+@media (max-width: 1038px) {
+    .sobreOProjetoPage {
+        @include mobile.sobreOProjetoMobileStyles;
     }
 }
