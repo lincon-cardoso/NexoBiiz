@@ -2,7 +2,7 @@
 
 .header {
     background: linear-gradient(90deg, #6B21A8FF 0%, #312E81FF 100%);
-    border-radius: 0px 0px 0px 0px;
+    border-radius: 0px;
     box-shadow: 0px 0px 1px #171a1f12, 0px 0px 2px #171a1f1F;
     color: #FFFFFF;
 
@@ -10,31 +10,29 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        max-width: 1200px; // Define um tamanho máximo para a div
-        margin: 0 auto; // Centraliza horizontalmente
-        padding: 0.5rem 1rem; // Adiciona espaçamento nas laterais
-        color: #FFFFFF;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0.5rem 1rem;
 
         .headerLogo {
             display: flex;
-            flex-direction: row; // Define a direção horizontal para posicionar o texto ao lado direito da imagem
+            flex-direction: row;
             align-items: center;
             font-size: 1.5rem;
             font-weight: bold;
 
-
             .headerLogoImage {
                 width: 80px;
                 height: 50px;
-                margin: 0; // Remove margens desnecessárias
-                vertical-align: middle; // Garante alinhamento vertical
+                margin: 0;
+                vertical-align: middle;
             }
 
             .headerLogoText {
                 display: inline-block;
-                vertical-align: middle; // Garante alinhamento vertical
+                vertical-align: middle;
                 font-size: 1.5rem;
-                line-height: normal; // Ajusta o espaçamento para alinhamento
+                line-height: normal;
             }
         }
 
@@ -46,15 +44,17 @@
             line-height: 20px;
             font-weight: 600;
 
-            a {
-                text-decoration: none;
-                color: #FFFFFF;
-                padding: 0.5rem 1rem;
-                border-radius: 5px;
-                transition: background-color 0.3s ease;
+            .headerNavItem {
+                a {
+                    text-decoration: none;
+                    color: #FFFFFF;
+                    padding: 0.5rem 1rem;
+                    border-radius: 5px;
+                    transition: background-color 0.3s ease;
 
-                &:hover {
-                    background-color: rgba(255, 255, 255, 0.2);
+                    &:hover {
+                        background-color: rgba(255, 255, 255, 0.2);
+                    }
                 }
             }
         }
@@ -64,7 +64,21 @@
             align-items: center;
             gap: 1rem;
 
-            .headerLoginButton,
+            .headerLoginButton {
+                padding: 0.5rem 1rem;
+                border-radius: 15px;
+                font-size: 14px;
+                font-weight: 600;
+                color: #FFFFFF;
+                text-decoration: none;
+                background-color: #4F46E5;
+                transition: background-color 0.3s ease;
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.2);
+                }
+            }
+
             .headerRegisterButton {
                 padding: 0.5rem 1rem;
                 border-radius: 15px;
@@ -72,15 +86,8 @@
                 font-weight: 600;
                 color: #FFFFFF;
                 text-decoration: none;
+                background-color: #6B21A8;
                 transition: background-color 0.3s ease;
-
-                &.headerLoginButton {
-                    background-color: #4F46E5; // Indigo
-                }
-
-                &.headerRegisterButton {
-                    background-color: #6B21A8;
-                }
 
                 &:hover {
                     background-color: rgba(255, 255, 255, 0.2);
@@ -89,18 +96,37 @@
         }
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 410px) {
         @include mobile.headerMobileStyles;
-        
+
+        .headerNav {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+
+            .headerNavLinks {
+                flex-direction: column; // Ajusta os itens para ficarem um abaixo do outro
+                justify-content: center;
+                gap: 1rem;
+
+                .headerNavItem {
+                    a {
+                        font-size: 14px;
+                        padding: 0.5rem 1rem;
+                        text-align: center;
+                    }
+                }
+            }
+        }
     }
 
-    @media (max-width: 680px) {
+    @media (max-width: 850px) {
         @include mobile.headerMobileStyles;
-        .headerNav{
-            flex-direction: column; // Muda a direção para coluna em telas menores
-            align-items: center; // Centraliza os itens
-            gap: 1rem; // Ajusta o espaçamento entre os itens
+
+        .headerNav {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
         }
-        
     }
 }

@@ -9,27 +9,27 @@
     align-items: center;
     padding: 40px 0;
 
-    .footerContent {
+    .content {
         padding: 20px;
         width: 100%;
         max-width: 1200px;
 
-        .navLinks {
+        .nav {
             display: flex;
             justify-content: center;
             gap: 20px;
 
-            .navList {
+            .list {
                 list-style: none;
                 padding: 0;
                 margin: 0;
                 display: flex;
                 gap: 15px;
 
-                .navItem {
+                .item {
                     font-size: 16px;
 
-                    .navLink {
+                    .link {
                         color: #FFFFFF;
                         text-decoration: none;
                         transition: color 0.3s;
@@ -43,8 +43,8 @@
         }
     }
 
-    .footerBottom {
-        .socialIcons {
+    .bottom {
+        .social {
             gap: 30px;
             margin: 0 auto;
             display: flex;

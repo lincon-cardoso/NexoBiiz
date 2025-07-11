@@ -1,38 +1,41 @@
-@mixin footerMobileStyles {
-    // São aplicados diretamente na .footer porque você inclui este mixin
-    padding: 20px 15px;
-    background-color: #1F2937; // bg-gray-800
-    color: #FFFFFF;
-
-    .footerContent {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-
-        .navLinks {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+@mixin footerMobileStyles{
+    .content {
+            padding: 15px;
+            width: 100%;
+            text-align: center;
+    
+            .nav {
+                flex-direction: column;
+                gap: 20px;
+    
+                .list {
+                    flex-direction: column;
+                    gap: 20px;
+    
+                    .item {
+                        font-size: 14px;
+    
+                        .link {
+                            font-size: 14px;
+                            text-align: center;
+                        }
+                    }
+                }
+            }
         }
-
-        .navList {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 40px;
+    
+        .bottom {
+            .social {
+                gap: 20px;
+    
+                .socialLink {
+                    font-size: 20px;
+                }
+            }
+    
+            .copyright {
+                font-size: 12px;
+                margin-bottom: 20px;
+            }
         }
-    }
-
-    .footerBottom {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-
-        .socialIcons {
-            display: flex;
-            gap: 20px;
-        }
-    }
 }
