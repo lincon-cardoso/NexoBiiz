@@ -1,3 +1,5 @@
+@use '../../../mobile/components/tutorial/mobile-tutorial.module' as mobile;
+
 .tutorialPage {
     display: flex;
     flex-direction: column;
@@ -47,69 +49,109 @@
             .stepsSection,
             .tipsSection {
                 flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 658px;
+                height: 405px;
             }
 
             .stepsSection {
-                .step {
+                .stepTitle {
+                    font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem);
+                    line-height: 1.3;
+                    font-weight: 400;
+                    color: rgba(85, 26, 139, 1);
+                    font-family: Archivo;
+                    margin: 66px 0 65px;
+                    text-align: center;
+                }
+
+                .stepsContainer {
                     display: flex;
                     flex-direction: column;
-                    align-items: center;
-                    width: 658px;
-                    height: 405px;
+                    gap: 25px;
+                    width: 492px; // <-- LARGURA MOVIDA PARA O CONTÊINER
 
-                    .stepTitle {
-                        font-size: 36px;
-                        line-height: 48px;
+                    .stepDescription {
+                        font-family: Inter;
+                        font-size: 20px;
+                        line-height: 22px;
                         font-weight: 400;
-                        color: rgba(85, 26, 139, 1);
-                        font-family: Archivo;
-                        margin: 66px 0 65px;
-                    }
+                        color: rgba(0, 123, 255, 1);
+                        // width: 492px; <-- LARGURA REMOVIDA DAQUI
 
-                    .stepsContainer {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 25px;
-
-                        .stepDescription {
-                            font-family: Inter;
-                            font-size: 20px;
-                            line-height: 22px;
-                            font-weight: 400;
-                            color: rgba(0, 123, 255, 1);
-                            width: 492px;
-
-                            .span {
-                                font-weight: 700;
-                                color: black;
-                            }
+                        .span {
+                            font-weight: 700;
+                            color: black;
                         }
                     }
                 }
             }
 
             .tipsSection {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                width: 658px;
-                height: 405px;
-
                 .tipsTitle {
-                    font-size: 36px;
-                    line-height: 48px;
+                    font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem);
+                    line-height: 1.3;
                     font-weight: 400;
                     color: rgba(85, 26, 139, 1);
                     font-family: Archivo;
                     margin: 66px 0 65px;
+                    text-align: center;
                 }
 
-                .tipsDescription {
+                .tipsList {
                     font-family: Inter;
                     font-size: 20px;
                     line-height: 23px;
                     font-weight: 400;
                     width: 492px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+                    padding: 0;
+                    list-style: none;
+                }
+
+                .tipItem {
+                    position: relative;
+                    padding-left: 20px;
+
+                    &::before {
+                        content: '✔';
+                        position: absolute;
+                        left: 0;
+                        color: rgba(85, 26, 139, 1);
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 1200px) {
+        @include mobile.tutorialMobileStyles;
+    }
+
+    @media (max-width: 850px) {
+        .mainContent .sectionsContainer {
+
+            .stepsContainer,
+            .tipsList {
+                align-items: center;
+            }
+
+            .stepDescription,
+            .tipItem {
+                text-align: center;
+                width: 90%;
+            }
+
+            .tipItem {
+                padding-left: 0;
+
+                &::before {
+                    display: none;
                 }
             }
         }

@@ -1,3 +1,5 @@
+@use '../../mobile/suporte/mobile-suporte.module' as mobile;
+
 .suportePage {
     display: flex;
     flex-direction: column;
@@ -52,4 +54,8 @@
             }
         }
     }
+
+        @media (max-width: 1038px) {
+            @include mobile.suporteMobileStyles;
+        }
 }

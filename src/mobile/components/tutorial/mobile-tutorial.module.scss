@@ -1,0 +1,52 @@
+@mixin tutorialMobileStyles {
+    .mainContent {
+        min-width: 100%;
+        padding: 15px;
+
+        .introSection {
+            height: auto;
+            gap: 20px;
+            padding: 20px 0;
+
+            .title {
+                font-size: 28px;
+                line-height: 1.2;
+            }
+
+            .subtitle {
+                width: 95%;
+                font-size: 18px;
+                line-height: 1.4;
+            }
+        }
+
+        .sectionsContainer {
+            flex-direction: column;
+            width: 100%;
+            padding: 15px;
+            gap: 40px;
+
+            .stepsSection,
+            .tipsSection {
+                width: 100%;
+                height: auto;
+
+                .stepTitle,
+                .tipsTitle {
+                    margin: 20px 0;
+                }
+
+                .stepsContainer,
+                .tipsList {
+                    width: 100%;
+                }
+
+                .stepDescription,
+                .tipItem {
+                    width: 100%;
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+}
