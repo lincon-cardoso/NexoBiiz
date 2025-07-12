@@ -17,7 +17,7 @@ export function MainContent() {
           comunidade a crescerem com tecnologia, simplificando a gestão diária.
         </p>
         <div className={styles.actions}>
-          <Link href="/signup" passHref>
+          <Link href="/register" passHref>
             <button className={styles.primaryButton} aria-label="Comece agora">
               Comece Agora
             </button>
