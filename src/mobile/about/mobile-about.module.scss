@@ -1,0 +1,22 @@
+@mixin aboutMobileStyles {
+    .mainContent {
+        padding: 15px;
+        gap: 30px;
+
+        .section {
+            width: 95%;
+            padding: 15px;
+
+            .title {
+                width: 100%;
+                font-size: 36px;
+                line-height: 1.2;
+            }
+
+            .description {
+                width: 100%;
+                font-size: 14px;
+            }
+        }
+    }
+}

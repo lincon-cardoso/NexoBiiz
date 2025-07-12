@@ -10,6 +10,7 @@ html,
 body {
     height: 100%;
     font-family: Arial, sans-serif;
+    min-width: 320px; /* Garantir que o site funcione em telas pequenas */
 }
 
 a {

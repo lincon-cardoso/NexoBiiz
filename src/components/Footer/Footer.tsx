@@ -21,7 +21,7 @@ export function Footer() {
               </Link>
             </li>
             <li className={styles.item}>
-              <Link href="/Contato" className={styles.link}>
+              <Link href="/contato" className={styles.link}>
                 Contato
               </Link>
             </li>
