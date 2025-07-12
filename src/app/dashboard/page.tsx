@@ -39,11 +39,11 @@ const DashboardPage = () => {
       try {
         const res = await fetchWithAuth("/api/transactions");
         if (res.ok) {
-          const data = await res.json();          
+          const data = await res.json();
           const decryptedTransactions = data.transactions
             .map((t: EncryptedTransaction) => {
               try {
-                const decryptedValue = decryptData(t.valor);                
+                const decryptedValue = decryptData(t.valor);
                 return {
                   id: Number(t.id),
                   tipo: t.tipo,
@@ -85,7 +85,10 @@ const DashboardPage = () => {
 
   // Adicionar transação
   const handleAdd = async () => {
-    if (!descricao || valor === "" || isNaN(Number(valor))) return;
+    if (!descricao || valor === "" || isNaN(Number(valor))) {
+      alert("Por favor, preencha a descrição e um valor válido.");
+      return;
+    }
     try {
       const encryptedBody = encryptData({
         tipo,
@@ -97,24 +100,39 @@ const DashboardPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: encryptedBody }),
       });
+
+      const responseData = await res.json();
+
       if (res.ok) {
-        const { transaction } = await res.json();
-        const decryptedTransaction = {
+        const { transaction } = responseData;
+        const newTransaction = {
           id: Number(transaction.id),
           tipo: transaction.tipo,
           descricao: transaction.descricao,
           valor: Number(transaction.valor),
         };
         setTransactions((prevTransactions) => [
-          decryptedTransaction,
+          newTransaction,
           ...prevTransactions,
         ]);
         setDescricao("");
         setValor("");
       } else {
-        console.error("Erro ao adicionar transação:", res.statusText);
+        // Exibe o erro vindo da API para o usuário
+        console.error(
+          "Erro ao adicionar transação:",
+          responseData.error || res.statusText
+        );
+        alert(
+          `Erro ao adicionar transação: ${responseData.error || res.statusText}`
+        );
       }
-    } catch {}
+    } catch (error) {
+      console.error("Falha na comunicação com a API:", error);
+      alert(
+        "Não foi possível adicionar a transação. Verifique sua conexão ou tente novamente mais tarde."
+      );
+    }
   };
 
   // Filtragem para exibição
