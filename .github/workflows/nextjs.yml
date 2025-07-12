@@ -1,9 +1,10 @@
+# .github/workflows/deploy-nextjs.yml
 name: Deploy Next.js site to Railway
 
 on:
   push:
     branches:
-      - main        # Ajuste aqui para sua branch padrão
+      - main           # sua branch padrão
   workflow_dispatch:
 
 permissions:
@@ -35,10 +36,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: 20
           cache: ${{ steps.detect.outputs.manager }}
 
-      - name: Cache dependencies & .next
+      - name: Cache deps & .next
         uses: actions/cache@v4
         with:
           path: |
@@ -55,27 +56,20 @@ jobs:
       - name: Build Next.js
         run: ${{ steps.detect.outputs.manager }} run build
 
-      # Caso queira compartilhar o build como artefato:
-      # - name: Upload .next artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: next-build
-      #     path: .next
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      # Se precisar do código-fonte neste job, descomente:
-      # - name: Checkout
-      #   uses: actions/checkout@v4
-
       - name: Purge Cloudflare cache
+        shell: bash
         run: |
-          curl -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache" \
+          echo "🔍 Purging Cloudflare zone $ZONE_ID"
+          resp=$(curl -w '\nHTTP_STATUS:%{http_code}' \
+            -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache" \
             -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
             -H "Content-Type: application/json" \
-            --data '{"purge_everything":true}'
+            --data '{"purge_everything":true}')
+          echo "$resp"
         env:
           ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -87,5 +81,5 @@ jobs:
             -H "Content-Type: application/json" \
             --data '{"query":"mutation { deploy(input: { projectId: \"$RAILWAY_PROJECT_ID\" }) { id }}"}'
         env:
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN2 }}    # agora usa RAILWAY_API_TOKEN
+          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN2 }}
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
