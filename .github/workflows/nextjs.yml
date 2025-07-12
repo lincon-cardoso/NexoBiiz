@@ -2,7 +2,8 @@ name: Deploy Next.js site to Railway
 
 on:
   push:
-    branches: ["master"]
+    branches:
+      - main        # Ajuste aqui para sua branch padrão
   workflow_dispatch:
 
 permissions:
@@ -54,7 +55,7 @@ jobs:
       - name: Build Next.js
         run: ${{ steps.detect.outputs.manager }} run build
 
-      # Se quiser compartilhar artefato do build:
+      # Caso queira compartilhar o build como artefato:
       # - name: Upload .next artifact
       #   uses: actions/upload-artifact@v3
       #   with:
@@ -65,7 +66,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      # Descomente se precisar do código-fonte neste job
+      # Se precisar do código-fonte neste job, descomente:
       # - name: Checkout
       #   uses: actions/checkout@v4
 
@@ -86,5 +87,5 @@ jobs:
             -H "Content-Type: application/json" \
             --data '{"query":"mutation { deploy(input: { projectId: \"$RAILWAY_PROJECT_ID\" }) { id }}"}'
         env:
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN2 }}
+          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN2 }}    # agora usa RAILWAY_API_TOKEN
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}

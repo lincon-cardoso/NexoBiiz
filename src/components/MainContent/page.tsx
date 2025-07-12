@@ -19,7 +19,7 @@ export function MainContent() {
         <div className={styles.actions}>
           <Link href="/register" passHref>
             <button className={styles.primaryButton} aria-label="Comece agora">
-              Comece Agora corno
+              Comece Agora
             </button>
           </Link>
           <Link href="/tutorial" passHref>
