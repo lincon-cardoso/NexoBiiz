@@ -1,0 +1,23 @@
+@mixin loginMobileStyles {
+    .mainContent {
+        width: 90%;
+        height: auto;
+        padding: 20px;
+        box-shadow: none;
+    }
+
+    .loginSection {
+        gap: 20px;
+
+        .title {
+            font-size: 32px;
+            line-height: 48px;
+        }
+
+        .loginForm {
+            width: 100%;
+            padding: 15px;
+            box-shadow: none;
+        }
+    }
+}

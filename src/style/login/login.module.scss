@@ -1,3 +1,5 @@
+@use '../../mobile/login/mobile-login.module' as mobile;
+
 .loginPage {
     display: flex;
     flex-direction: column;
@@ -6,6 +8,8 @@
     width: 100%;
     height: 100vh;
     background: rgba(255, 255, 255, 1);
+    min-width: 320px;
+    /* Define a largura mínima. Abaixo disso, uma barra de rolagem aparecerá. */
 
     .mainContent {
         display: flex;
@@ -121,6 +125,12 @@
 
             }
 
+        }
+    }
+
+    @media (max-width: 1038px) {
+        & {
+            @include mobile.loginMobileStyles;
         }
     }
 }
