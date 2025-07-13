@@ -124,7 +124,9 @@ const DashboardPage = () => {
           responseData.error || res.statusText
         );
         alert(
-          `Erro ao adicionar transação: ${responseData.error || res.statusText}`
+          `Erro ao adicionar transação: ${
+            responseData.error || "Ocorreu um erro desconhecido."
+          }`
         );
       }
     } catch (error) {

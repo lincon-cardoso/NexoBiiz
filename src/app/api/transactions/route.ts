@@ -29,7 +29,7 @@ export async function GET(request: Request) {
   try {
     const userId = await getUserId(request);
     if (!userId) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const transactions = await prisma.transaction.findMany({
       where: { userId },
@@ -48,9 +48,10 @@ export async function GET(request: Request) {
     });
 
     return NextResponse.json({ transactions: encryptedTransactions });
-  } catch {
+  } catch (error) {
+    console.error("ERRO EM GET /api/transactions:", error);
     return NextResponse.json(
-      { message: "Erro ao buscar transações" },
+      { error: "Erro ao buscar transações" },
       { status: 500 }
     );
   }
@@ -60,14 +61,14 @@ export async function POST(request: Request) {
   try {
     if (!SECRET_KEY) {
       return NextResponse.json(
-        { message: "Erro interno: chave de criptografia não configurada." },
+        { error: "Erro interno: chave de criptografia não configurada." },
         { status: 500 }
       );
     }
 
     const userId = await getUserId(request);
     if (!userId) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const payload = await request.json();
@@ -79,25 +80,27 @@ export async function POST(request: Request) {
 
     if (!decryptedString) {
       return NextResponse.json(
-        { message: "Dados descriptografados estão vazios ou inválidos." },
+        { error: "Dados descriptografados estão vazios ou inválidos." },
         { status: 400 }
       );
     }
 
     const decryptedData = JSON.parse(decryptedString);
     const { tipo, descricao, valor } = decryptedData;
-    if (!tipo || !descricao || !valor || isNaN(Number(valor))) {
-      return NextResponse.json({ message: "Dados inválidos" }, { status: 400 });
+    if (!tipo || !descricao || valor === undefined || isNaN(Number(valor))) {
+      return NextResponse.json({ error: "Dados inválidos" }, { status: 400 });
     }
 
     const transaction = await prisma.transaction.create({
-      data: { tipo, descricao, valor, userId },
+      data: { tipo, descricao, valor: Number(valor), userId },
     });
 
     return NextResponse.json({ transaction }, { status: 201 });
-  } catch {
+  } catch (error) {
+    // CORREÇÃO PRINCIPAL: Adiciona log e padroniza a resposta de erro.
+    console.error("ERRO EM POST /api/transactions:", error);
     return NextResponse.json(
-      { message: "Erro ao processar requisição" },
+      { error: "Erro ao processar requisição" },
       { status: 500 }
     );
   }
