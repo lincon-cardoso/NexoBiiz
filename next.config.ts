@@ -1,3 +1,4 @@
+// next.config.js
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -91,6 +92,7 @@ const nextConfig: NextConfig = {
           // cache diferente para localhost (desenvolvimento) e produção
           ...(isDev
             ? [
+                // Dev: nada em cache
                 {
                   key: "Cache-Control",
                   value:
@@ -118,6 +120,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
+        source: "/_next/image/:path*",
         source: "/_next/image/:path*",
         headers: [
           {
