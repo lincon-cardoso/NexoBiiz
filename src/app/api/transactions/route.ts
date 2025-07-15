@@ -6,7 +6,7 @@ import CryptoJS from "crypto-js";
 
 
 dotenv.config();
-// Carrega e sanitiza a chave de criptografia do arquivo .env, removendo possíveis aspas e espaços
+// Carrega e sanitiza a chave de cripografia do arquivo .env, removendo possíveis aspas e espaços
 let SECRET_KEY = process.env.SECRET_KEY || "";
 SECRET_KEY = SECRET_KEY.trim().replace(/^"|"$/g, "");
 
