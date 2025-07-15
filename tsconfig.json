@@ -17,7 +17,7 @@
     "forceConsistentCasingInFileNames": true, // Added
     "baseUrl": "./", // Garantido
     "paths": {
-      "@/*": ["src/*"] // Garantido
+      "@/*": ["src/*"] // Garantidofew
     },
     "plugins": [
       {
