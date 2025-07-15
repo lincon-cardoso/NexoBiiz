@@ -45,6 +45,7 @@
     "postcss": "^8.5.3",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-preset-env": "^10.1.5",
+    "prisma": "^6.11.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   }
