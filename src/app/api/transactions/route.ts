@@ -38,16 +38,18 @@ export async function GET(request: Request) {
       orderBy: { createdAt: "desc" },
     });
 
-    const encryptedTransactions = transactions.map((transaction) => {
-      const encryptedValue = CryptoJS.AES.encrypt(
-        transaction.valor.toString(),
-        SECRET_KEY
-      ).toString();
-      return {
-        ...transaction,
-        valor: encryptedValue,
-      };
-    });
+    const encryptedTransactions = transactions.map(
+      (transaction: { valor: number }) => {
+        const encryptedValue = CryptoJS.AES.encrypt(
+          transaction.valor.toString(),
+          SECRET_KEY
+        ).toString();
+        return {
+          ...transaction,
+          valor: encryptedValue,
+        };
+      }
+    );
 
     return NextResponse.json({ transactions: encryptedTransactions });
   } catch (error) {
