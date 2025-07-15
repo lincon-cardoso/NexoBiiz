@@ -11,7 +11,7 @@
     "postinstall": "prisma generate"
   },
   "prisma": {
-    "schema": "./prisma/schema.prisma"
+    "schema": "prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^6.11.1",
