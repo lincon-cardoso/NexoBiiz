@@ -8,7 +8,7 @@ export function MainContent() {
       <section className={styles.section}>
         <header className={styles.header}>
           <h1 className={styles.title}>
-            Organize seu negócio comm{" "}
+            Organize seu negócio com{" "}
             <span className={styles.highlight}>praticidade e autonomia</span>.
           </h1>
         </header>
