@@ -10,7 +10,7 @@ export default function SuportePage() {
         <section className={styles.section}>
           <h1 className={styles.title}>Suporte</h1>
         </section>
-{/*  */}
+
         <section className={styles.section}>
           <h2 className={styles.subtitle}>
             Como faço para começar a usar o NexoBiiz?
