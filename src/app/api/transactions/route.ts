@@ -3,7 +3,8 @@ import { prisma } from "@/lib/prisma";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import CryptoJS from "crypto-js";
-import type { Transaction } from "@prisma/client";
+// Permitir explicit any para transações
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 dotenv.config();
 // Carrega e sanitiza a chave de criptografia do arquivo .env, removendo possíveis aspas e espaços
@@ -37,18 +38,16 @@ export async function GET(request: Request) {
       orderBy: { createdAt: "desc" },
     });
 
-    const encryptedTransactions = transactions.map(
-      (transaction: Transaction) => {
-        const encryptedValue = CryptoJS.AES.encrypt(
-          transaction.valor.toString(),
-          SECRET_KEY
-        ).toString();
-        return {
-          ...transaction,
-          valor: encryptedValue,
-        };
-      }
-    );
+    const encryptedTransactions = transactions.map((transaction) => {
+      const encryptedValue = CryptoJS.AES.encrypt(
+        transaction.valor.toString(),
+        SECRET_KEY
+      ).toString();
+      return {
+        ...transaction,
+        valor: encryptedValue,
+      };
+    });
 
     return NextResponse.json({ transactions: encryptedTransactions });
   } catch (error) {
