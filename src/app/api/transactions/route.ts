@@ -3,8 +3,7 @@ import { prisma } from "@/lib/prisma";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import CryptoJS from "crypto-js";
-// Permitir explicit any para transações
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 
 dotenv.config();
 // Carrega e sanitiza a chave de criptografia do arquivo .env, removendo possíveis aspas e espaços
