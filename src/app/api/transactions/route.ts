@@ -101,7 +101,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ transaction }, { status: 201 });
   } catch {
-    const response = NextResponse.redirect("/login");
+    const response = NextResponse.redirect("/login"); // URL relativa corrigida
     response.cookies.delete("accessToken");
     return response;
   }

@@ -101,9 +101,13 @@ const DashboardPage = () => {
         body: JSON.stringify({ data: encryptedBody }),
       });
 
-      const responseData = await res.json();
+      if (res.status === 401 || res.redirected) {
+        window.location.href = "/login"; // Redireciona para login se o token for inválido ou ausente
+        return;
+      }
 
       if (res.ok) {
+        const responseData = await res.json();
         const { transaction } = responseData;
         const newTransaction = {
           id: Number(transaction.id),
@@ -118,22 +122,10 @@ const DashboardPage = () => {
         setDescricao("");
         setValor("");
       } else {
-        // Exibe o erro vindo da API para o usuário
-        console.error(
-          "Erro ao adicionar transação:",
-          responseData.error || res.statusText
-        );
-        alert(
-          `Erro ao adicionar transação: ${
-            responseData.error || "Ocorreu um erro desconhecido."
-          }`
-        );
+        window.location.href = "/login"; // Redireciona para login em caso de problema
       }
-    } catch (error) {
-      console.error("Falha na comunicação com a API:", error);
-      alert(
-        "Não foi possível adicionar a transação. Verifique sua conexão ou tente novamente mais tarde."
-      );
+    } catch {
+      window.location.href = "/login"; // Redireciona para login em caso de falha
     }
   };
 
