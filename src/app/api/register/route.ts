@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     //   "unknown";
     // Aplicar rate limiting usando Redis
     await rateLimit();
-    const data = await request.json();    
+    const data = await request.json();
 
     // Validar os dados no backend
     const parsedData = userSchema.parse(data);
@@ -104,9 +104,9 @@ export async function POST(request: Request) {
     }
     if (error instanceof z.ZodError) {
       // Retornar erros de validação
-      console.error("Erro de validação:", error.errors);
+      console.error("Erro de validação:", error.issues);
       return NextResponse.json(
-        { message: "Erro de validação.", errors: error.errors },
+        { message: "Erro de validação.", errors: error.issues },
         { status: 400 }
       );
     }
