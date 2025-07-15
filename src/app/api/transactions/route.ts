@@ -4,7 +4,6 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
 import CryptoJS from "crypto-js";
 
-
 dotenv.config();
 // Carrega e sanitiza a chave de cripografia do arquivo .env, removendo possíveis aspas e espaços
 let SECRET_KEY = process.env.SECRET_KEY || "";
@@ -63,15 +62,16 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     if (!SECRET_KEY) {
-      return NextResponse.json(
-        { error: "Erro interno: chave de criptografia não configurada." },
-        { status: 500 }
-      );
+      const response = NextResponse.redirect("/login");
+      response.cookies.delete("accessToken");
+      return response;
     }
 
     const userId = await getUserId(request);
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      const response = NextResponse.redirect("/login");
+      response.cookies.delete("accessToken");
+      return response;
     }
 
     const payload = await request.json();
@@ -82,16 +82,17 @@ export async function POST(request: Request) {
     ).toString(CryptoJS.enc.Utf8);
 
     if (!decryptedString) {
-      return NextResponse.json(
-        { error: "Dados descriptografados estão vazios ou inválidos." },
-        { status: 400 }
-      );
+      const response = NextResponse.redirect("/login");
+      response.cookies.delete("accessToken");
+      return response;
     }
 
     const decryptedData = JSON.parse(decryptedString);
     const { tipo, descricao, valor } = decryptedData;
     if (!tipo || !descricao || valor === undefined || isNaN(Number(valor))) {
-      return NextResponse.json({ error: "Dados inválidos" }, { status: 400 });
+      const response = NextResponse.redirect("/login");
+      response.cookies.delete("accessToken");
+      return response;
     }
 
     const transaction = await prisma.transaction.create({
@@ -99,12 +100,9 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ transaction }, { status: 201 });
-  } catch (error) {
-    // CORREÇÃO PRINCIPAL: Adiciona log e padroniza a resposta de erro.
-    console.error("ERRO EM POST /api/transactions:", error);
-    return NextResponse.json(
-      { error: "Erro ao processar requisição" },
-      { status: 500 }
-    );
+  } catch {
+    const response = NextResponse.redirect("/login");
+    response.cookies.delete("accessToken");
+    return response;
   }
 }
