@@ -4,7 +4,7 @@ name: Deploy Next.js site to Railway
 on:
   push:
     branches:
-      - main           # sua branch padrão
+      - main # sua branch padrão
   workflow_dispatch:
 
 permissions:
@@ -51,9 +51,15 @@ jobs:
             ${{ runner.os }}-nextjs-deps-
 
       - name: Install dependencies
+        working-directory: ./NexoBiiz
         run: ${{ steps.detect.outputs.manager }} ${{ steps.detect.outputs.installCmd }}
 
+      - name: Generate Prisma Client
+        working-directory: ./NexoBiiz
+        run: npx prisma generate --schema prisma/schema.prisma
+
       - name: Build Next.js
+        working-directory: ./NexoBiiz
         run: ${{ steps.detect.outputs.manager }} run build
 
   deploy:
