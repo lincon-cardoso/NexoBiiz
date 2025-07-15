@@ -63,5 +63,8 @@
   "bugs": {
     "url": "https://github.com/lincon-cardoso/NexoBiiz/issues"
   },
-  "homepage": "https://github.com/lincon-cardoso/NexoBiiz#readme"
+  "homepage": "https://github.com/lincon-cardoso/NexoBiiz#readme",
+  "prisma": {
+    "schema": "./prisma/schema.prisma"
+  }
 }
