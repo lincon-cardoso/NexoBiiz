@@ -37,7 +37,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsMounted(true);
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const verifyMFA = async (code: string) => {
+    const response = await fetch("/api/verify-mfa", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ code }),
+      credentials: "include",
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+  };
+
+  const login = async (email: string, password: string, mfaCode?: string) => {
     try {
       const response = await fetch("/api/login", {
         method: "POST",
@@ -48,6 +63,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         credentials: "include",
       });
       const data = await response.json();
+      if (mfaCode) {
+        await verifyMFA(mfaCode);
+      }
       if (!response.ok) {
         console.error("[AuthContext] Erro no login:", data);
         throw new Error(data.message || "Erro ao realizar login.");

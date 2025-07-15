@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: Request) {
   try {
@@ -30,6 +31,26 @@ export async function POST(request: Request) {
       }
     );
 
+    const refreshTokenId = uuidv4();
+    await prisma.token.create({
+      data: {
+        id: refreshTokenId,
+        userId: user.id,
+        token: refreshToken,
+        createdAt: new Date(),
+      },
+    });
+
+    // Registrar sessão de login
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      request.headers.get("remote-address") ||
+      "";
+    const userAgent = request.headers.get("user-agent") || "";
+    await prisma.session.create({
+      data: { userId: user.id, ip, userAgent, createdAt: new Date() },
+    });
+
     const response = NextResponse.json({
       message: "Login bem-sucedido",
       user: {
@@ -52,7 +73,7 @@ export async function POST(request: Request) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
-      maxAge: 7 * 24 * 60 * 60,
+      maxAge: 60 * 60 * 24 * 7, // 7 dias
     });
 
     return response;

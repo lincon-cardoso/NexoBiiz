@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import jwt from "jsonwebtoken";
 import DOMPurify from "dompurify";
 import Joi from "joi";
+import { prisma } from "@/lib/prisma";
 
 const attemptTracker: Record<
   string,
@@ -16,7 +18,7 @@ const transactionSchema = Joi.object({
   valor: Joi.number().positive().required(),
 });
 
-export const enhancedRateLimiter = (
+export const enhancedRateLimiter = async (
   req: NextApiRequest | Request,
   res: NextApiResponse | undefined,
   next: () => void
@@ -102,6 +104,40 @@ export const enhancedRateLimiter = (
       }
       throw new Error("Erro ao processar entrada.");
     }
+  }
+
+  // Monitoramento de sessão
+  // Monitoramento de sessão: obter userId do accessToken
+  const cookieHeader =
+    req instanceof Request
+      ? req.headers.get("cookie") || ""
+      : (req as NextApiRequest).headers.cookie || "";
+  const accessMatch = cookieHeader.match(/accessToken=([^;]+)/);
+  let sessionUserId: number | null = null;
+  if (accessMatch) {
+    try {
+      const payload = jwt.verify(
+        accessMatch[1],
+        process.env.JWT_ACCESS_SECRET!
+      ) as { userId: number };
+      sessionUserId = payload.userId;
+    } catch {
+      // Token inválido: não registrar sessão
+    }
+  }
+  if (sessionUserId) {
+    const userAgentHeader =
+      req instanceof Request
+        ? req.headers.get("user-agent") || ""
+        : (req as NextApiRequest).headers["user-agent"] || "";
+    await prisma.session.create({
+      data: {
+        userId: sessionUserId,
+        ip: sanitizedIp,
+        userAgent: userAgentHeader,
+        createdAt: new Date(),
+      },
+    });
   }
 
   next();

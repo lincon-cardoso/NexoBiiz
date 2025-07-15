@@ -16,6 +16,15 @@ export function csrfValidator(req: NextRequest) {
     return NextResponse.json({ error: "Invalid CSRF token" }, { status: 403 });
   }
 
-  console.log("CSRF validation passed.");
+  const mfaHeader = req.headers.get("x-mfa-code");
+  if (!mfaHeader) {
+    console.error("MFA code não fornecido.");
+    return NextResponse.json(
+      { error: "MFA code obrigatório" },
+      { status: 403 }
+    );
+  }
+
+  console.log("CSRF and MFA validation passed.");
   return NextResponse.next();
 }

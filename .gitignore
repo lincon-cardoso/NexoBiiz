@@ -1,4 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# colocar a pasta prisma no .gitignore pode causar problemas com o prisma migrate dev, então não coloquei
 
 # dependencies
 /node_modules
