@@ -101,7 +101,7 @@ export default function RegisterPage() {
       }
     } catch (error: unknown) {
       if (error instanceof z.ZodError) {
-        const fieldErrors = error.errors.reduce(
+        const fieldErrors = error.issues.reduce(
           (acc, err) => {
             const key = err.path[0] as keyof typeof errors;
             acc[key] = err.message;
@@ -112,7 +112,7 @@ export default function RegisterPage() {
         setErrors(fieldErrors);
         setErrorMessage(
           "Erro de validação: " +
-            error.errors.map((err) => err.message).join(", ")
+            error.issues.map((err) => err.message).join(", ")
         );
       } else if (error instanceof Error && error.name === "AbortError") {
         setErrorMessage("Tempo de requisição excedido. Tente novamente.");
