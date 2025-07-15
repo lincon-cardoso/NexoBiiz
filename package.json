@@ -1,71 +1,38 @@
 {
-  "name": "nexobiiz",
-  "version": "1.1.1",
+  "name": "meu-portifolio-next",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
-    "build": "prisma generate && next build",
-    "postinstall": "prisma generate",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "ts-node prisma/seed.ts"
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
-    "@prisma/client": "^6.11.1",
-    "argon2": "^0.43.0",
-    "bcrypt": "^6.0.0",
-    "bcryptjs": "^3.0.2",
     "critters": "^0.0.23",
-    "crypto-js": "^4.2.0",
-    "dompurify": "^3.2.6",
-    "dotenv": "^17.0.1",
-    "ioredis": "^5.6.1",
-    "joi": "^17.13.3",
-    "jsonwebtoken": "^9.0.2",
+    "dotenv": "^17.2.0",
     "next": "^15.2.4",
-    "next-auth": "^4.24.11",
-    "rate-limiter-flexible": "^7.1.1",
+    "next-sitemap": "^4.2.3",
+    "pg": "^8.14.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "sass": "^1.86.3",
-    "zod": "^3.25.71"
+    "sass": "^1.85.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@types/bcrypt": "^5.0.2",
-    "@types/crypto-js": "^4.2.2",
-    "@types/jest": "^30.0.0",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^20",
+    "@types/node": "^20.17.28",
+    "@types/pg": "^8.11.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/uuid": "^10.0.0",
+    "cssnano": "^7.0.6",
     "eslint": "^9",
-    "eslint-config-next": "15.2.4",
-    "jest": "^29.7.0",
-    "node-mocks-http": "^1.17.2",
-    "prisma": "^6.11.1",
-    "rimraf": "^6.0.1",
-    "ts-jest": "^29.4.0",
+    "eslint-config-next": "15.2.1",
+    "postcss": "^8.5.3",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-preset-env": "^10.1.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
-  },
-  "description": "O **Nexobiiz** é um sistema ERP (Enterprise Resource Planning) simples e acessível, desenvolvido como parte de um projeto acadêmico com foco em impacto social. Ele foi criado para atender as necessidades de pequenos negócios de bairro, oferecendo uma solução prática e gratuita para ajudar microempreendedores a gerenciar seus negócios com mais eficiência e autonomia.",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lincon-cardoso/NexoBiiz.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
-  "bugs": {
-    "url": "https://github.com/lincon-cardoso/NexoBiiz/issues"
-  },
-  "homepage": "https://github.com/lincon-cardoso/NexoBiiz#readme",
-  "prisma": {
-    "schema": "./prisma/schema.prisma"
+    "typescript": "^5.8.2"
   }
 }

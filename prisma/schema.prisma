@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  company      String
+  cnpj         String        @unique
+  phone        String
+  createdAt    DateTime      @default(now())
+  transactions Transaction[]
+  sessions     Session[] // Corrected: Ensure this line is present
+  tokens       Token[] // Corrected: Ensure this line is present
+  mfas         MFA[] // Corrected: Ensure this line is present
+}
+
+model ScriptEvents {
+  id         Int      @id @default(autoincrement())
+  scriptName String
+  eventType  String
+  timestamp  DateTime @default(now())
+
+  @@map("ScriptEvents")
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  tipo      String
+  descricao String
+  valor     Float
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  ip        String
+  userAgent String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Token {
+  id        String   @id
+  userId    Int
+  token     String   @unique
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model MFA {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  code      String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
